@@ -17,9 +17,9 @@ export default class EventPresenter {
     this.boardpoints = [...this.pointModel.getPoints()];
     render(this.listSort, this.container);
     render(this.containerForEvent, this.container);
-    render(new ListFormView(), this.containerForEvent.getElement());
+    render(new ListFormView({point:this.boardpoints[0]}), this.containerForEvent.getElement());
 
-    for (let i = 0; i < this.boardpoints.length; i++) {
+    for (let i = 1; i < this.boardpoints.length; i++) {
       render(new EventItemView({point:this.boardpoints[i]}), this.containerForEvent.getElement());
     }
   }

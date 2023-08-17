@@ -3,8 +3,6 @@ import {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS} from 
 
 const uniqueRandomGenerator = new UniqueRandomGenerator(1, 10);
 
-
-
 const allDestinations = [
   {
     id: 11,

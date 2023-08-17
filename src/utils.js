@@ -36,4 +36,19 @@ function formatTime(dueDate) {
   return dueDate ? dayjs(dueDate).format(TIME_FORMAT) : '';
 }
 
-export{getRandomElementFromArray, formatDateMonth, formatTime};
+function getDurationInMinutes(startTime, endTime) {
+  return dayjs(endTime).diff(dayjs(startTime), 'minute');
+}
+
+function padZero(value) {
+  return value < 10 ? `0${value}` : value;
+}
+
+function convertMinutesToHoursFormat(totalMinutes) {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  return `${padZero(hours)}H ${padZero(minutes)}M`;
+}
+
+export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat};
