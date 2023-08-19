@@ -1,4 +1,4 @@
-import { POINT__TYPE } from '../const.js';
+import { POINT__TYPE, DESTINATION } from '../const.js';
 import {createElement} from '../render.js';
 
 const DEFAULT__POINT = {
@@ -12,19 +12,22 @@ const DEFAULT__POINT = {
 };
 
 function createFormTemplate(point) {
-  const{destination, type} = point;
+  const{destination, type } = point;
 
-  function createTypeGroup(){
-    return POINT__TYPE.map((item) => {
-      const itemKey = item.toLowerCase();
-      return (
-        `<div class="event__type-item">
-          <input id="event-type-${itemKey}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${itemKey}">
-          <label class="event__type-label  event__type-label--${itemKey}" for="event-type-${itemKey}-1">${item}</label>
-         </div>`
-      );
-    }).join('');
-  }
+  const typeGroupHTML = POINT__TYPE.reduce((result, item) => {
+    const itemKey = item.toLowerCase();
+    result += `<div class="event__type-item">
+      <input id="event-type-${itemKey}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${itemKey}"${item === type ? 'checked' : ''}>
+      <label class="event__type-label  event__type-label--${itemKey}" for="event-type-${itemKey}-1">${item}</label>
+      </div>`;
+    return result;
+  }, '');
+
+
+  const destinationGroupHTML = DESTINATION.reduce((result, item) => {
+    result += `<option value="${item}"></option>`;
+    return result;
+  }, '');
 
   return (
     `<li class="trip-events__item">
@@ -40,7 +43,7 @@ function createFormTemplate(point) {
             <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Event type</legend>
-                ${createTypeGroup()}
+                ${typeGroupHTML}
 
 
               </fieldset>
@@ -49,19 +52,17 @@ function createFormTemplate(point) {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              Flight
+              ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Geneva" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
             <datalist id="destination-list-1">
-              <option value="Amsterdam"></option>
-              <option value="Geneva"></option>
-              <option value="Chamonix"></option>
+            ${destinationGroupHTML}
             </datalist>
           </div>
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="19/03/19 00:00">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="">
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
             <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="19/03/19 00:00">

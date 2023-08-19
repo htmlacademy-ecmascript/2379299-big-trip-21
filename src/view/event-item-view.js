@@ -17,7 +17,7 @@ function createEventItemTemplate(point) {
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${el.price}</span>
       </li>`
-    );
+    ).join('');
 
   }
   return (
