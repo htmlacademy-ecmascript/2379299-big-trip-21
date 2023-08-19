@@ -7,7 +7,8 @@ const POINT__TYPE = [
   'Flight',
   'Check-in',
   'Sightseeing',
-  'Restaurant'];
+  'Restaurant'
+];
 
 const DESTINATION = [
   'Paris',
