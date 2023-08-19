@@ -51,4 +51,12 @@ function convertMinutesToHoursFormat(totalMinutes) {
   return `${padZero(hours)}H ${padZero(minutes)}M`;
 }
 
-export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat};
+function convertToCustomFormat(isoDate) {
+  const date = dayjs(isoDate);
+
+  const formattedDate = date.format('DD/MM/YY HH:mm');
+
+  return formattedDate;
+}
+
+export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat, convertToCustomFormat};

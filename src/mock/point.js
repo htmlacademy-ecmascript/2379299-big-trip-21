@@ -154,9 +154,10 @@ function getPoints() {
 const updatedPoints = getPoints();
 
 function getRandomPoint(){
+
   return getRandomElementFromArray(updatedPoints);
 }
 
-export {getRandomPoint};
+export {getRandomPoint, allOffers};
 
 
