@@ -18,6 +18,12 @@ function createFormTemplate(point) {
   const timeFrom = convertToCustomFormat(dateFrom);
   const timeTo = convertToCustomFormat(dateTo);
 
+  const currentDestinationPictures = destination.pictures.reduce((result, item) => {
+    const {src, description} = item;
+    result += `<img class="event__photo" src="${src}" alt="${description}">`;
+    return result;
+  }, '');
+
   const typeGroupHTML = POINT__TYPE.reduce((result, item) => {
     const itemKey = item.toLowerCase();
     result += `<div class="event__type-item">
@@ -26,7 +32,6 @@ function createFormTemplate(point) {
       </div>`;
     return result;
   }, '');
-
 
   const destinationGroupHTML = DESTINATION.reduce((result, item) => {
     result += `<option value="${item}"></option>`;
@@ -110,31 +115,23 @@ function createFormTemplate(point) {
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
             <div class="event__available-offers">
-
-
-
-
             ${offersGroupHTML}
-
-
-
             </div>
           </section>
+
 
           <section class="event__section  event__section--destination">
-            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
+          <h3 class="event__section-title  event__section-title--destination">${destination.name}</h3>
+          <p class="event__destination-description">${destination.description}</p>
 
-            <div class="event__photos-container">
-              <div class="event__photos-tape">
-                <img class="event__photo" src="img/photos/1.jpg" alt="Event photo">
-                <img class="event__photo" src="img/photos/2.jpg" alt="Event photo">
-                <img class="event__photo" src="img/photos/3.jpg" alt="Event photo">
-                <img class="event__photo" src="img/photos/4.jpg" alt="Event photo">
-                <img class="event__photo" src="img/photos/5.jpg" alt="Event photo">
-              </div>
+          <div class="event__photos-container">
+            <div class="event__photos-tape">
+              ${currentDestinationPictures}
             </div>
-          </section>
+          </div>
+        </section>
+
+
         </section>
       </form>
     </li>`

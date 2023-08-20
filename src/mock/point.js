@@ -1,7 +1,7 @@
 import UniqueRandomGenerator, { getRandomElementFromArray } from '../utils.js';
 import {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS} from '../const.js';
 
-const uniqueRandomGenerator = new UniqueRandomGenerator(1, 10);
+const uniqueRandomGenerator = new UniqueRandomGenerator(1, 100);
 
 const allDestinations = [
   {
@@ -9,6 +9,18 @@ const allDestinations = [
     description: getRandomElementFromArray(CITY__DESCRIPTIONS),
     name: getRandomElementFromArray(DESTINATION),
     pictures: [
+      {
+        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
+        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
+        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
+        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
+      },
       {
         src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
         description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
@@ -23,6 +35,22 @@ const allDestinations = [
       {
         src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
         description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
+        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
+        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
+        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
+        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
       }
     ]
   },
@@ -34,6 +62,18 @@ const allDestinations = [
       {
         src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
         description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
+        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
+        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
+        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
       }
     ]
   },
@@ -42,6 +82,22 @@ const allDestinations = [
     description: getRandomElementFromArray(CITY__DESCRIPTIONS),
     name: getRandomElementFromArray(DESTINATION),
     pictures: [
+      {
+        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
+        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
+        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
+        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
+      },
+      {
+        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
+        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
+      },
       {
         src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
         description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
