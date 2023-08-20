@@ -4,23 +4,23 @@ import ListSortView from '../view/list-sort-view.js';
 import ListFormView from '../view/event-item-form-view.js';
 import {render} from '../render.js';
 
-const EVENT_COUNT = 3;
-
 export default class EventPresenter {
   listSort = new ListSortView();
   containerForEvent = new ListContainerForEvent();
 
-  constructor({siteEventContainer}){
-    this.siteEventContainer = siteEventContainer;
+  constructor({container, pointModel}){
+    this.container = container;
+    this.pointModel = pointModel;
   }
 
   init(){
-    render(this.listSort, this.siteEventContainer);
-    render(this.containerForEvent, this.siteEventContainer);
-    render(new ListFormView(), this.containerForEvent.getElement());
+    this.boardpoints = [...this.pointModel.getPoints()];
+    render(this.listSort, this.container);
+    render(this.containerForEvent, this.container);
+    render(new ListFormView({point:this.boardpoints[0]}), this.containerForEvent.getElement());
 
-    for (let i = 0; i < EVENT_COUNT; i++) {
-      render(new EventItemView(), this.containerForEvent.getElement());
+    for (let i = 1; i < this.boardpoints.length; i++) {
+      render(new EventItemView({point:this.boardpoints[i]}), this.containerForEvent.getElement());
     }
   }
 }
