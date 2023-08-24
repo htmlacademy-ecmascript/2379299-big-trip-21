@@ -1,25 +1,13 @@
-
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-stateful-view.js';
 
 function createContainerForEventTemplate() {
   return '<ul class="trip-events__list"></ul>';
 }
 
-export default class ListContainerForEvent {
-  getTemplate() {
+export default class ListContainerForEvent extends AbstractView {
+  get template () {
     return createContainerForEventTemplate();
   }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
 }
+
 

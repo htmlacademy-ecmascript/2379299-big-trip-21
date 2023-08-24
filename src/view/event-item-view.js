@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-stateful-view.js';
 import {formatDateMonth, formatTime, getDurationInMinutes, convertMinutesToHoursFormat} from '../utils.js';
 
 
@@ -57,25 +57,24 @@ function createEventItemTemplate(point) {
   );
 }
 
-export default class EventItemView {
-  constructor({point}){
-    this.point = point;
+export default class EventItemView extends AbstractView{
+  #handleOnClick = null;
+  #point = null;
+
+  constructor({point, onClick}){
+    super();
+    this.#point = point;
+    this.#handleOnClick = onClick;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
   }
 
-  getTemplate() {
-
-    return createEventItemTemplate(this.point);
+  get template() {
+    return createEventItemTemplate(this.#point);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleOnClick ();
+  };
 }

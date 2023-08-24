@@ -1,5 +1,4 @@
-
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-stateful-view.js';
 
 function createEventInfoTemplate() {
   return (
@@ -17,20 +16,8 @@ function createEventInfoTemplate() {
   );
 }
 
-export default class ListEventInfoView {
-  getTemplate() {
+export default class ListEventInfoView extends AbstractView{
+  get template() {
     return createEventInfoTemplate();
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

@@ -2,27 +2,62 @@ import EventItemView from '../view/event-item-view';
 import ListContainerForEvent from '../view/container-for-event';
 import ListSortView from '../view/list-sort-view.js';
 import ListFormView from '../view/event-item-form-view.js';
-import {render} from '../render.js';
+import {render, replace} from '../framework/render.js';
 
 export default class EventPresenter {
-  listSort = new ListSortView();
-  containerForEvent = new ListContainerForEvent();
+  #container = null;
+  #pointModel = null;
+
+  #listSort = new ListSortView();
+  #containerForEvent = new ListContainerForEvent();
+  #boardPoints = [];
 
   constructor({container, pointModel}){
-    this.container = container;
-    this.pointModel = pointModel;
+    this.#container = container;
+    this.#pointModel = pointModel;
   }
 
   init(){
-    this.boardpoints = [...this.pointModel.getPoints()];
-    render(this.listSort, this.container);
-    render(this.containerForEvent, this.container);
-    render(new ListFormView({point:this.boardpoints[0]}), this.containerForEvent.getElement());
+    this.#boardPoints = [...this.#pointModel.points];
+    render(this.#listSort, this.#container);
+    render(this.#containerForEvent, this.#container);
 
-    for (let i = 1; i < this.boardpoints.length; i++) {
-      render(new EventItemView({point:this.boardpoints[i]}), this.containerForEvent.getElement());
+    for (let i = 0; i < this.#boardPoints.length; i++) {
+      this.#renderPoint(this.#boardPoints[i]);
     }
   }
+
+  #renderPoint(point){
+    const escKeyDownHandler = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceFormToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    };
+
+    const pointItem = new EventItemView({point,
+      onClick: () => {
+        replacePointToForm();
+        document.addEventListener('keydown', escKeyDownHandler);
+      }
+    });
+
+    const pointForm = new ListFormView({point,
+      onFormSubmit: () => {
+        replaceFormToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    });
+
+    function replacePointToForm(){
+      replace(pointForm, pointItem);
+    }
+
+    function replaceFormToPoint(){
+      replace(pointItem, pointForm);
+    }
+
+    render(pointItem,this.#containerForEvent.element);
+  }
 }
-
-
