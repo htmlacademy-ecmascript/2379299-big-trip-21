@@ -5,7 +5,7 @@ import {render, RenderPosition} from '../framework/render.js';
 
 export default class MainPresenter {
   #siteMainContainer = null;
-  
+
   #listInfo = new ListEventInfoView();
   #ListFilter = new ListFilterView();
 

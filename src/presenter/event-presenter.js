@@ -7,7 +7,7 @@ import {render} from '../framework/render.js';
 export default class EventPresenter {
   #container = null;
   #pointModel = null;
-  
+
   #listSort = new ListSortView();
   #containerForEvent = new ListContainerForEvent();
   #boardPoints = [];
@@ -21,10 +21,14 @@ export default class EventPresenter {
     this.#boardPoints = [...this.#pointModel.points];
     render(this.#listSort, this.#container);
     render(this.#containerForEvent, this.#container);
-    render(new ListFormView({point:this.#boardPoints[0]}), this.#containerForEvent.element);
-
-    for (let i = 1; i < this.#boardPoints.length; i++) {
-      render(new EventItemView({point:this.#boardPoints[i]}), this.#containerForEvent.element);
+    // render(new ListFormView({point:this.#boardPoints[0]}), this.#containerForEvent.element);
+    for (let i = 0; i < this.#boardPoints.length; i++) {
+      this.#renderPoint(this.#boardPoints[i]);
     }
+  }
+
+  #renderPoint(point){
+    const pointItem = new EventItemView({point});
+    render(pointItem,this.#containerForEvent.element);
   }
 }
