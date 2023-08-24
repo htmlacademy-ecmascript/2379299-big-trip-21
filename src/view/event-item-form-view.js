@@ -140,13 +140,24 @@ function createFormTemplate(point) {
 
 export default class ListFormView extends AbstractView{
   #point = null;
-  constructor({point = DEFAULT__POINT}){
+  #handleOnFormSubmit = null;
+
+  constructor({point = DEFAULT__POINT, onFormSubmit}){
     super();
     this.#point = point;
+    this.#handleOnFormSubmit = onFormSubmit;
+
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandle);
   }
 
   get template() {
     return createFormTemplate(this.#point);
   }
+
+  #formSubmitHandle = (evt) => {
+    evt.preventDefault();
+    this.#handleOnFormSubmit();
+
+  };
 }
 
