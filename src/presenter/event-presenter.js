@@ -28,15 +28,25 @@ export default class EventPresenter {
   }
 
   #renderPoint(point){
+    const escKeyDownHandler = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceFormToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    };
+
     const pointItem = new EventItemView({point,
       onClick: () => {
         replacePointToForm();
+        document.addEventListener('keydown', escKeyDownHandler);
       }
     });
 
     const pointForm = new ListFormView({point,
       onFormSubmit: () => {
         replaceFormToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
       }
     });
 
@@ -49,6 +59,5 @@ export default class EventPresenter {
     }
 
     render(pointItem,this.#containerForEvent.element);
-
   }
 }
