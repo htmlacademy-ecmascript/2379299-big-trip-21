@@ -11,4 +11,3 @@ const eventPresenter = new EventPresenter({container:siteEventContainer, pointMo
 
 mainPresenter.init();
 eventPresenter.init();
-

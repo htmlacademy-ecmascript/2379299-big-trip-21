@@ -1,6 +1,6 @@
 import ListEventInfoView from '../view/event-info-view.js';
 import ListFilterView from '../view/list-filter-view.js';
-import {render, RenderPosition} from '../render.js';
+import {render, RenderPosition} from '../framework/render.js';
 
 
 export default class MainPresenter {

@@ -1,5 +1,5 @@
 import { POINT__TYPE, DESTINATION } from '../const.js';
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-stateful-view.js';
 import {convertToCustomFormat} from '../utils.js';
 import {allOffers} from '../mock/point.js';
 
@@ -138,25 +138,15 @@ function createFormTemplate(point) {
   );
 }
 
-export default class ListFormView {
+export default class ListFormView extends AbstractView{
+  #point = null;
   constructor({point = DEFAULT__POINT}){
-    this.point = point;
+    super();
+    this.#point = point;
   }
 
-  getTemplate() {
-    return createFormTemplate(this.point);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createFormTemplate(this.#point);
   }
 }
 

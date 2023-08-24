@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-stateful-view.js';
 import {formatDateMonth, formatTime, getDurationInMinutes, convertMinutesToHoursFormat} from '../utils.js';
 
 
@@ -57,25 +57,16 @@ function createEventItemTemplate(point) {
   );
 }
 
-export default class EventItemView {
+export default class EventItemView extends AbstractView{
+  #point = null;
+
   constructor({point}){
-    this.point = point;
+    super();
+    this.#point = point;
   }
 
-  getTemplate() {
+  get template() {
 
-    return createEventItemTemplate(this.point);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+    return createEventItemTemplate(this.#point);
   }
 }
