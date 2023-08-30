@@ -3,6 +3,7 @@ import ListContainerForEvent from '../view/container-for-event';
 import ListSortView from '../view/list-sort-view.js';
 import ListFormView from '../view/event-item-form-view.js';
 import {render, replace} from '../framework/render.js';
+import ListListEmplyView from '../view/list-emply-view.js';
 
 export default class EventPresenter {
   #container = null;
@@ -20,12 +21,17 @@ export default class EventPresenter {
   init(){
     this.#boardPoints = [...this.#pointModel.points];
     render(this.#listSort, this.#container);
-    render(this.#containerForEvent, this.#container);
+    if (!this.#boardPoints.length){
+      render(new ListListEmplyView, this.#container);
+      return;
+    }
 
+    render(this.#containerForEvent, this.#container);
     for (let i = 0; i < this.#boardPoints.length; i++) {
       this.#renderPoint(this.#boardPoints[i]);
     }
   }
+
 
   #renderPoint(point){
     const escKeyDownHandler = (evt) => {

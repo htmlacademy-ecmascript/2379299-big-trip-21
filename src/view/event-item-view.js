@@ -1,7 +1,6 @@
 import AbstractView from '../framework/view/abstract-stateful-view.js';
 import {formatDateMonth, formatTime, getDurationInMinutes, convertMinutesToHoursFormat} from '../utils.js';
 
-
 function createEventItemTemplate(point) {
   const {basePrice, destination, type, dateFrom, dateTo, isFavorite, offers} = point;
   const dateMonth = formatDateMonth(dateFrom);
@@ -10,16 +9,16 @@ function createEventItemTemplate(point) {
   const durationMinutes = getDurationInMinutes(dateFrom, dateTo);
   const timeInterval = convertMinutesToHoursFormat(durationMinutes);
   const favoriteClass = isFavorite ? 'event__favorite-btn event__favorite-btn--active' : 'event__favorite-btn';
-  function createEventOffersTemplate(offer){
-    return offer.map((el) =>
-      `<li class="event__offer">
-      <span class="event__offer-title">${el.title}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${el.price}</span>
-      </li>`
-    ).join('');
 
-  }
+  const typeGroupOffers = offers.reduce((result, item) => {
+    result += `<li class="event__offer">
+      <span class="event__offer-title">${item.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${item.price}</span>
+      </li>`;
+    return result;
+  }, '');
+
   return (
     `<li class="trip-events__item">
       <div class="event">
@@ -41,7 +40,7 @@ function createEventItemTemplate(point) {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${createEventOffersTemplate(offers)}
+          ${typeGroupOffers}
         </ul>
         <button class="${favoriteClass}" type="button">
           <span class="visually-hidden">Add to favorite</span>
