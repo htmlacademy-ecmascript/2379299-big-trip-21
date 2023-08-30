@@ -1,3 +1,19 @@
+const FILTER = [
+  'Everything',
+  'Future',
+  'Present',
+  'Past',
+  'Accept filter',
+];
+
+const SORT = [
+  'Day',
+  'Event',
+  'Time',
+  'Price',
+  'Offers',
+];
+
 const POINT__TYPE = [
   'Taxi',
   'Bus',
@@ -48,4 +64,4 @@ const PHOTO__DESCRIPTIONS = [
   'Cobblestone streets',
   'City skyline at dusk'
 ];
-export {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS};
+export {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS, FILTER, SORT};
