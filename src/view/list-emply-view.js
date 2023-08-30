@@ -18,7 +18,7 @@ function createListEmplyTemplate() {
   );
 }
 
-export default class ListListEmplyView extends AbstractView{
+export default class ListEmplyView extends AbstractView{
   get template() {
     return createListEmplyTemplate();
   }

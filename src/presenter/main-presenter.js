@@ -1,22 +1,78 @@
-import ListEventInfoView from '../view/event-info-view.js';
-import ListFilterView from '../view/list-filter-view.js';
-import {render, RenderPosition} from '../framework/render.js';
-
+import EventItemView from '../view/event-item-view';
+import ListContainerForEvent from '../view/container-for-event';
+import ListSortView from '../view/list-sort-view.js';
+import ListFormView from '../view/event-item-form-view.js';
+import {render, replace} from '../framework/render.js';
+import ListEmplyView from '../view/list-emply-view.js';
 
 export default class MainPresenter {
-  #siteMainContainer = null;
+  #container = null;
+  #pointModel = null;
 
-  #listInfo = new ListEventInfoView();
-  #ListFilter = new ListFilterView();
+  #listSort = new ListSortView();
+  #listEmply = new ListEmplyView();
+  #containerForEvent = new ListContainerForEvent();
+  #boardPoints = [];
 
-  constructor({siteMainContainer}){
-    this.#siteMainContainer = siteMainContainer;
+  constructor({container, pointModel}){
+    this.#container = container;
+    this.#pointModel = pointModel;
+  }
+
+  #renderSort(){
+    render(this.#listSort, this.#container);
+  }
+
+  #renderEmply(){
+    render(this.#listEmply, this.#container);
   }
 
   init(){
-    render(this.#listInfo, this.#siteMainContainer, RenderPosition.AFTERBEGIN);
-    render(this.#ListFilter, this.#siteMainContainer);
+    this.#boardPoints = [...this.#pointModel.points];
+    this.#renderSort();
+    if (!this.#boardPoints.length){
+      this.#renderEmply();
+      return;
+    }
+
+    render(this.#containerForEvent, this.#container);
+    for (let i = 0; i < this.#boardPoints.length; i++) {
+      this.#renderPoint(this.#boardPoints[i]);
+    }
+  }
+
+
+  #renderPoint(point){
+    const escKeyDownHandler = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceFormToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    };
+
+    const pointItem = new EventItemView({point,
+      onClick: () => {
+        replacePointToForm();
+        document.addEventListener('keydown', escKeyDownHandler);
+      }
+    });
+
+    const pointForm = new ListFormView({point,
+      onFormSubmit: () => {
+        replaceFormToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    });
+
+    function replacePointToForm(){
+      replace(pointForm, pointItem);
+    }
+
+    function replaceFormToPoint(){
+      replace(pointItem, pointForm);
+    }
+
+    render(pointItem,this.#containerForEvent.element);
   }
 }
-
-
