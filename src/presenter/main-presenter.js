@@ -11,6 +11,7 @@ export default class MainPresenter {
   #listEmply = new ListEmplyView();
   #containerForEvent = new ListContainerForEvent();
   #boardPoints = [];
+  #allPoints = new Map();
 
   constructor({container, pointModel}){
     this.#container = container;
@@ -39,9 +40,15 @@ export default class MainPresenter {
     }
   }
 
-
   #renderPoint(point){
     const pointPresentor = new EventPresenter({containerForEvent: this.#containerForEvent.element});
     pointPresentor.init(point);
+    this.#allPoints.set(point.ID, pointPresentor);
+  }
+
+  #clearPointList() {
+    this.#allPoints.forEach((presenter) => presenter.destroy());
+    this.#allPoints.clear();
   }
 }
+

@@ -11,3 +11,4 @@ const eventPresenter = new MainPresenter({container:siteEventContainer, pointMod
 
 mainPresenter.init();
 eventPresenter.init();
+

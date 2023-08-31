@@ -29,10 +29,13 @@ export default class EventPresenter {
     });
 
     if (prevPointItem === null || prevPointForm === null){
+
       render(this.#pointItem, this.#containerForEvent);
       return;
     }
+
     if (this.#containerForEvent.contains(prevPointItem.element)) {
+
       replace(this.#pointItem, prevPointItem);
     }
 

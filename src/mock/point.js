@@ -1,5 +1,6 @@
 import UniqueRandomGenerator, { getRandomElementFromArray } from '../utils.js';
 import {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS} from '../const.js';
+import { nanoid } from 'nanoid';
 
 const uniqueRandomGenerator = new UniqueRandomGenerator(1, 100);
 
@@ -210,10 +211,11 @@ function getPoints() {
 const updatedPoints = getPoints();
 
 function getRandomPoint(){
-
-  return getRandomElementFromArray(updatedPoints);
+  return{
+    ID: nanoid(),
+    ...getRandomElementFromArray(updatedPoints)
+  };
 }
 
 export {getRandomPoint, allOffers};
-
 
