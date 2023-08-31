@@ -3,6 +3,8 @@ import ListSortView from '../view/list-sort-view.js';
 import {render} from '../framework/render.js';
 import ListEmplyView from '../view/list-emply-view.js';
 import EventPresenter from './event-presenter.js';
+import {updateItem} from '../utils.js';
+
 export default class MainPresenter {
   #container = null;
   #pointModel = null;
@@ -39,6 +41,11 @@ export default class MainPresenter {
       this.#renderPoint(this.#boardPoints[i]);
     }
   }
+
+  #handlePointChange = (updatePoint) => {
+    this.#boardPoints = updateItem(this.#boardPoints, updatePoint);
+    this.#allPoints.get(updatePoint.id).init(updatePoint);
+  };
 
   #renderPoint(point){
     const pointPresentor = new EventPresenter({containerForEvent: this.#containerForEvent.element});
