@@ -1,10 +1,8 @@
-import EventItemView from '../view/event-item-view';
 import ListContainerForEvent from '../view/container-for-event';
 import ListSortView from '../view/list-sort-view.js';
-import ListFormView from '../view/event-item-form-view.js';
-import {render, replace} from '../framework/render.js';
+import {render} from '../framework/render.js';
 import ListEmplyView from '../view/list-emply-view.js';
-
+import EventPresenter from './event-presenter.js';
 export default class MainPresenter {
   #container = null;
   #pointModel = null;
@@ -43,36 +41,7 @@ export default class MainPresenter {
 
 
   #renderPoint(point){
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
-
-    const pointItem = new EventItemView({point,
-      onClick: () => {
-        replacePointToForm();
-        document.addEventListener('keydown', escKeyDownHandler);
-      }
-    });
-
-    const pointForm = new ListFormView({point,
-      onFormSubmit: () => {
-        replaceFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    });
-
-    function replacePointToForm(){
-      replace(pointForm, pointItem);
-    }
-
-    function replaceFormToPoint(){
-      replace(pointItem, pointForm);
-    }
-
-    render(pointItem,this.#containerForEvent.element);
+    const pointPresentor = new EventPresenter({containerForEvent: this.#containerForEvent.element});
+    pointPresentor.init(point);
   }
 }
