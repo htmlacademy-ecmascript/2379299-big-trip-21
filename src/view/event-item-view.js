@@ -59,13 +59,16 @@ function createEventItemTemplate(point) {
 export default class EventItemView extends AbstractView{
   #handleOnClick = null;
   #point = null;
+  #handleFavoriteClick = null;
 
-  constructor({point, onClick}){
+  constructor({point, onClick, onFavoriteClick}){
     super();
     this.#point = point;
     this.#handleOnClick = onClick;
+    this.#handleFavoriteClick = onFavoriteClick;
 
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClick);
   }
 
   get template() {
@@ -74,6 +77,11 @@ export default class EventItemView extends AbstractView{
 
   #clickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleOnClick ();
+    this.#handleOnClick();
+  };
+
+  #favoriteClick = (evt) => {
+    evt.preventDefault();
+    this.#handleFavoriteClick();
   };
 }

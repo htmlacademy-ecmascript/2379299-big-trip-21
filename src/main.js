@@ -6,9 +6,9 @@ const siteMainContainer = document.querySelector('.trip-main');
 const siteEventContainer = document.querySelector('.trip-events');
 
 const pointModel = new PointModel();
-const mainPresenter = new HeadPresenter({siteMainContainer});
-const eventPresenter = new MainPresenter({container:siteEventContainer, pointModel});
+const headPresenter = new HeadPresenter({siteMainContainer});
+const mainPresenter = new MainPresenter({container:siteEventContainer, pointModel});
 
+headPresenter.init();
 mainPresenter.init();
-eventPresenter.init();
 

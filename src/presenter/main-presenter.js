@@ -44,13 +44,18 @@ export default class MainPresenter {
 
   #handlePointChange = (updatePoint) => {
     this.#boardPoints = updateItem(this.#boardPoints, updatePoint);
-    this.#allPoints.get(updatePoint.id).init(updatePoint);
+    this.#allPoints.get(updatePoint.ID).init(updatePoint);
   };
 
   #renderPoint(point){
-    const pointPresentor = new EventPresenter({containerForEvent: this.#containerForEvent.element});
+    const pointPresentor = new EventPresenter({
+      containerForEvent: this.#containerForEvent.element,
+      onPointChange: this.#handlePointChange
+    });
+
     pointPresentor.init(point);
     this.#allPoints.set(point.ID, pointPresentor);
+
   }
 
   #clearPointList() {

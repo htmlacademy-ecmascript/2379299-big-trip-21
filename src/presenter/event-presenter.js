@@ -9,18 +9,23 @@ export default class EventPresenter {
 
   #pointItem = null;
   #pointForm = null;
+  #hendlePointChange = null;
 
-  constructor({containerForEvent}){
+  constructor({containerForEvent, onPointChange}){
     this.#containerForEvent = containerForEvent;
+    this.#hendlePointChange = onPointChange;
   }
 
   init(point){
     this.#point = point;
+
     const prevPointItem = this.#pointItem;
     const prevPointForm = this.#pointForm;
 
-    this.#pointItem = new EventItemView({point: this.#point,
-      onClick: this.#handleOnClick
+    this.#pointItem = new EventItemView({
+      point: this.#point,
+      onClick: this.#handleOnClick,
+      onFavoriteClick: this.#handleFavoriteClick,
     });
 
 
@@ -64,9 +69,9 @@ export default class EventPresenter {
     this.#replacePointToForm();
   };
 
-  #handleOnFormSubmit = () => {
+  #handleOnFormSubmit = (point) => {
     this.#replaceFormToPoint();
-
+    this.#hendlePointChange(point);
   };
 
   #replacePointToForm(){
@@ -78,5 +83,9 @@ export default class EventPresenter {
     replace(this.#pointItem, this.#pointForm);
     document.removeEventListener('keydown', this.escKeyDownHandler);
   }
+
+  #handleFavoriteClick = () => {
+    this.#hendlePointChange({...this.#point, isFavorite: !this.#point.isFavorite});
+  };
 }
 

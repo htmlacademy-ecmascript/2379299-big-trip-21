@@ -156,8 +156,7 @@ export default class ListFormView extends AbstractView{
 
   #formSubmitHandle = (evt) => {
     evt.preventDefault();
-    this.#handleOnFormSubmit();
-
+    this.#handleOnFormSubmit(this.#point);
   };
 }
 
