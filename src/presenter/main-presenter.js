@@ -50,7 +50,8 @@ export default class MainPresenter {
   #renderPoint(point){
     const pointPresentor = new EventPresenter({
       containerForEvent: this.#containerForEvent.element,
-      onPointChange: this.#handlePointChange
+      onPointChange: this.#handlePointChange,
+      onModeChange: this.#hendleModeChange
     });
 
     pointPresentor.init(point);
@@ -62,5 +63,9 @@ export default class MainPresenter {
     this.#allPoints.forEach((presenter) => presenter.destroy());
     this.#allPoints.clear();
   }
+
+  #hendleModeChange = () => {
+    this.#allPoints.forEach((presenter) => presenter.resetView());
+  };
 }
 

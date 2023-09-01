@@ -2,18 +2,25 @@ import EventItemView from '../view/event-item-view';
 import ListFormView from '../view/event-item-form-view.js';
 import {render, replace, remove} from '../framework/render.js';
 
-
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING'
+};
 export default class EventPresenter {
   #containerForEvent = null;
   #point = null;
+  #mode = Mode.DEFAULT;
 
   #pointItem = null;
   #pointForm = null;
-  #hendlePointChange = null;
 
-  constructor({containerForEvent, onPointChange}){
+  #hendlePointChange = null;
+  #hendleModeChange = null;
+
+  constructor({containerForEvent, onPointChange, onModeChange}){
     this.#containerForEvent = containerForEvent;
     this.#hendlePointChange = onPointChange;
+    this.#hendleModeChange = onModeChange;
   }
 
   init(point){
@@ -39,12 +46,12 @@ export default class EventPresenter {
       return;
     }
 
-    if (this.#containerForEvent.contains(prevPointItem.element)) {
+    if (this.#mode === Mode.DEFAULT) {
 
       replace(this.#pointItem, prevPointItem);
     }
 
-    if (this.#containerForEvent.contains(prevPointForm.element)) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#pointForm, prevPointForm);
     }
 
@@ -77,11 +84,20 @@ export default class EventPresenter {
   #replacePointToForm(){
     replace(this.#pointForm, this.#pointItem);
     document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#hendleModeChange();
+    this.#mode = Mode.EDITING;
+  }
+
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormToPoint();
+    }
   }
 
   #replaceFormToPoint(){
     replace(this.#pointItem, this.#pointForm);
     document.removeEventListener('keydown', this.escKeyDownHandler);
+    this.#mode = Mode.DEFAULT;
   }
 
   #handleFavoriteClick = () => {
