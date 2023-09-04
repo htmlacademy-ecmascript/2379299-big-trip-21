@@ -14,6 +14,14 @@ const SORT = [
   'Offers',
 ];
 
+const SortType = {
+  DAY: 'Day',
+  EVENT: 'Event',
+  TIME: 'Time',
+  PRICE: 'Price',
+  OFFERS: 'Offers'
+};
+
 const POINT__TYPE = [
   'Taxi',
   'Bus',
@@ -64,4 +72,4 @@ const PHOTO__DESCRIPTIONS = [
   'Cobblestone streets',
   'City skyline at dusk'
 ];
-export {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS, FILTER, SORT};
+export {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS, FILTER, SORT, SortType };

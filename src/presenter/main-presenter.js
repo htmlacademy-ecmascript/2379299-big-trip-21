@@ -4,12 +4,13 @@ import {render} from '../framework/render.js';
 import ListEmptyView from '../view/list-empty-view.js';
 import EventPresenter from './event-presenter.js';
 import {updateItem} from '../utils.js';
+import {SortType} from '../const';
 
 export default class MainPresenter {
   #container = null;
   #pointModel = null;
 
-  #listSort = new ListSortView();
+  #listSort = null;
   #listEmpty = new ListEmptyView();
   #containerForEvent = new ListContainerForEvent();
   #boardPoints = [];
@@ -20,7 +21,30 @@ export default class MainPresenter {
     this.#pointModel = pointModel;
   }
 
+  #handleSortTypeChange = (sortType) => {
+    switch (sortType) {
+      case SortType.DAY:
+        console.log("I am a DAY!");
+        break;
+
+      case SortType.TIME:
+        console.log("I am a TIME!");
+        break;
+
+      case SortType.PRICE:
+        console.log("I am a PRICE!");
+        break;
+
+      default:
+        console.log("I don't know");
+    }
+
+  };
+
   #renderSort(){
+    this.#listSort = new ListSortView({
+      onSortTypeChange: this.#handleSortTypeChange
+    });
     render(this.#listSort, this.#container);
   }
 
