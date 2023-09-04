@@ -17,6 +17,7 @@ export default class EventPresenter {
   #hendlePointChange = null;
   #hendleModeChange = null;
 
+
   constructor({containerForEvent, onPointChange, onModeChange}){
     this.#containerForEvent = containerForEvent;
     this.#hendlePointChange = onPointChange;
@@ -37,10 +38,11 @@ export default class EventPresenter {
 
 
     this.#pointForm = new ListFormView({point: this.#point,
-      onFormSubmit: this.#handleOnFormSubmit
+      onFormSubmit: this.#handleOnFormSubmit,
+      onClickButton: this.resetView.bind(this)
     });
 
-    if (prevPointItem === null || prevPointForm === null){
+    if (!prevPointItem || !prevPointForm){
 
       render(this.#pointItem, this.#containerForEvent);
       return;
@@ -68,7 +70,7 @@ export default class EventPresenter {
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
-      this.replaceFormToPoint();
+      this.#replaceFormToPoint();
     }
   };
 
@@ -96,7 +98,7 @@ export default class EventPresenter {
 
   #replaceFormToPoint(){
     replace(this.#pointItem, this.#pointForm);
-    document.removeEventListener('keydown', this.escKeyDownHandler);
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
     this.#mode = Mode.DEFAULT;
   }
 

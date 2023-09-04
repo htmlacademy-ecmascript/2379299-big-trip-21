@@ -1,7 +1,7 @@
 import ListContainerForEvent from '../view/container-for-event';
 import ListSortView from '../view/list-sort-view.js';
 import {render} from '../framework/render.js';
-import ListEmplyView from '../view/list-emply-view.js';
+import ListEmptyView from '../view/list-empty-view.js';
 import EventPresenter from './event-presenter.js';
 import {updateItem} from '../utils.js';
 
@@ -10,7 +10,7 @@ export default class MainPresenter {
   #pointModel = null;
 
   #listSort = new ListSortView();
-  #listEmply = new ListEmplyView();
+  #listEmpty = new ListEmptyView();
   #containerForEvent = new ListContainerForEvent();
   #boardPoints = [];
   #allPoints = new Map();
@@ -24,15 +24,15 @@ export default class MainPresenter {
     render(this.#listSort, this.#container);
   }
 
-  #renderEmply(){
-    render(this.#listEmply, this.#container);
+  #renderEmpty(){
+    render(this.#listEmpty, this.#container);
   }
 
   init(){
     this.#boardPoints = [...this.#pointModel.points];
     this.#renderSort();
     if (!this.#boardPoints.length){
-      this.#renderEmply();
+      this.#renderEmpty();
       return;
     }
 
