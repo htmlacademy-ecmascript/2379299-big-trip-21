@@ -3,7 +3,7 @@ import ListSortView from '../view/list-sort-view.js';
 import {render} from '../framework/render.js';
 import ListEmptyView from '../view/list-empty-view.js';
 import EventPresenter from './event-presenter.js';
-import {updateItem} from '../utils.js';
+import {updateItem, sortDay, sortTime, sortPrice} from '../utils.js';
 import {SortType} from '../const';
 
 export default class MainPresenter {
@@ -24,21 +24,22 @@ export default class MainPresenter {
   #handleSortTypeChange = (sortType) => {
     switch (sortType) {
       case SortType.DAY:
-        console.log("I am a DAY!");
+        this.#boardPoints.sort(sortDay);
         break;
 
       case SortType.TIME:
-        console.log("I am a TIME!");
+        this.#boardPoints.sort(sortTime);
         break;
 
       case SortType.PRICE:
-        console.log("I am a PRICE!");
+        this.#boardPoints.sort(sortPrice);
         break;
 
       default:
-        console.log("I don't know");
-    }
 
+    }
+    this.#clearPointList();
+    this.#renderPointsList();
   };
 
   #renderSort(){
@@ -60,16 +61,21 @@ export default class MainPresenter {
       return;
     }
 
-    render(this.#containerForEvent, this.#container);
-    for (let i = 0; i < this.#boardPoints.length; i++) {
-      this.#renderPoint(this.#boardPoints[i]);
-    }
+    this.#renderPointsList();
   }
 
   #handlePointChange = (updatePoint) => {
     this.#boardPoints = updateItem(this.#boardPoints, updatePoint);
     this.#allPoints.get(updatePoint.ID).init(updatePoint);
   };
+
+  #renderPointsList(){
+    render(this.#containerForEvent, this.#container);
+    for (let i = 0; i < this.#boardPoints.length; i++) {
+      this.#renderPoint(this.#boardPoints[i]);
+    }
+  }
+
 
   #renderPoint(point){
     const pointPresentor = new EventPresenter({

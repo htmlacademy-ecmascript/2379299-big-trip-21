@@ -64,4 +64,37 @@ function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
-export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat, convertToCustomFormat, updateItem};
+
+function getWeightForNullDate(dateA, dateB) {
+  if (dateA === null && dateB === null) {
+    return 0;
+  }
+
+  if (dateA === null) {
+    return 1;
+  }
+
+  if (dateB === null) {
+    return -1;
+  }
+
+  return null;
+}
+
+function sortDay(pointA, pointB) {
+  const weight = getWeightForNullDate(pointA.dateFrom, pointB.dateFrom);
+
+  return weight ?? dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
+}
+
+function sortTime(pointA, pointB) {
+  const durationMinutesA = getDurationInMinutes(pointA.dateFrom, pointA.dateTo);
+  const durationMinutessB = getDurationInMinutes(pointB.dateFrom, pointB.dateTo);
+  return durationMinutesA - durationMinutessB;
+}
+
+
+function sortPrice(pointA, pointB) {
+  return pointB.basePrice - pointA.basePrice;
+}
+export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat, convertToCustomFormat, updateItem, sortDay, sortTime, sortPrice};
