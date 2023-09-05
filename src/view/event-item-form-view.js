@@ -179,7 +179,6 @@ export default class ListFormView extends AbstractView{
   #clickHandler = (evt) => {
     evt.preventDefault();
     this.#handleOnClick();
-
   };
 }
 
