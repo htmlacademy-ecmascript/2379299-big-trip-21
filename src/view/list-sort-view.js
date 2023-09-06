@@ -5,7 +5,7 @@ const Sorts = Object.values(SortType).reduce((result, item) => {
 
   const itemKey = item.toLowerCase();
   result += `<div class="trip-sort__item  trip-sort__item--${itemKey}">
-  <input id="sort-${itemKey}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${itemKey}"${item === SortType.EVENT || item === SortType.OFFERS ? 'disabled' : ''}>
+  <input id="sort-${itemKey}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${itemKey}"${item === SortType.EVENT || item === SortType.OFFERS ? 'disabled' : ''} ${item === SortType.DAY ? 'checked' : ''}>
   <label class="trip-sort__btn" for="sort-${itemKey}" data-sort-type="${item}">${item}</label>
 </div>`;
   return result;
@@ -34,7 +34,6 @@ export default class ListSortView extends AbstractView{
       return;
     }
 
-    evt.preventDefault();
     this.#handleSortTypeChange(evt.target.dataset.sortType);
   };
 

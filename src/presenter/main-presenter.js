@@ -60,7 +60,7 @@ export default class MainPresenter {
       this.#renderEmpty();
       return;
     }
-
+    this.#boardPoints.sort(sortDay);
     this.#renderPointsList();
   }
 
