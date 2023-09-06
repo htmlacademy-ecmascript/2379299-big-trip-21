@@ -3,13 +3,14 @@ import ListSortView from '../view/list-sort-view.js';
 import {render} from '../framework/render.js';
 import ListEmptyView from '../view/list-empty-view.js';
 import EventPresenter from './event-presenter.js';
-import {updateItem} from '../utils.js';
+import {updateItem, sortDay, sortTime, sortPrice} from '../utils.js';
+import {SortType} from '../const';
 
 export default class MainPresenter {
   #container = null;
   #pointModel = null;
 
-  #listSort = new ListSortView();
+  #listSort = null;
   #listEmpty = new ListEmptyView();
   #containerForEvent = new ListContainerForEvent();
   #boardPoints = [];
@@ -20,7 +21,31 @@ export default class MainPresenter {
     this.#pointModel = pointModel;
   }
 
+  #handleSortTypeChange = (sortType) => {
+    switch (sortType) {
+      case SortType.DAY:
+        this.#boardPoints.sort(sortDay);
+        break;
+
+      case SortType.TIME:
+        this.#boardPoints.sort(sortTime);
+        break;
+
+      case SortType.PRICE:
+        this.#boardPoints.sort(sortPrice);
+        break;
+
+      default:
+
+    }
+    this.#clearPointList();
+    this.#renderPointsList();
+  };
+
   #renderSort(){
+    this.#listSort = new ListSortView({
+      onSortTypeChange: this.#handleSortTypeChange
+    });
     render(this.#listSort, this.#container);
   }
 
@@ -35,17 +60,22 @@ export default class MainPresenter {
       this.#renderEmpty();
       return;
     }
-
-    render(this.#containerForEvent, this.#container);
-    for (let i = 0; i < this.#boardPoints.length; i++) {
-      this.#renderPoint(this.#boardPoints[i]);
-    }
+    this.#boardPoints.sort(sortDay);
+    this.#renderPointsList();
   }
 
   #handlePointChange = (updatePoint) => {
     this.#boardPoints = updateItem(this.#boardPoints, updatePoint);
     this.#allPoints.get(updatePoint.ID).init(updatePoint);
   };
+
+  #renderPointsList(){
+    render(this.#containerForEvent, this.#container);
+    for (let i = 0; i < this.#boardPoints.length; i++) {
+      this.#renderPoint(this.#boardPoints[i]);
+    }
+  }
+
 
   #renderPoint(point){
     const pointPresentor = new EventPresenter({

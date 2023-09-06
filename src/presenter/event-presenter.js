@@ -37,7 +37,8 @@ export default class EventPresenter {
     });
 
 
-    this.#pointForm = new ListFormView({point: this.#point,
+    this.#pointForm = new ListFormView({
+      point: this.#point,
       onFormSubmit: this.#handleOnFormSubmit,
       onClickButton: this.resetView.bind(this)
     });
