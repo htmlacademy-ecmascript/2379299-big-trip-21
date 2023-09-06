@@ -3,6 +3,11 @@ import AbstractView from '../framework/view/abstract-stateful-view.js';
 import {convertToCustomFormat} from '../utils.js';
 import {allOffers} from '../mock/point.js';
 
+const Mode = {
+  CREATE: 'Cancel',
+  EDIT: 'Delate'
+};
+
 const DEFAULT__POINT = {
   basePrice: 1100,
   dateFrom: '2019-07-10T22:55:56.845Z',
@@ -14,7 +19,7 @@ const DEFAULT__POINT = {
 };
 
 function createFormTemplate(point) {
-  const{destination, type, dateFrom, dateTo, basePrice, offers} = point;
+  const{destination, type, dateFrom, dateTo, basePrice, offers, ID} = point;
   const timeFrom = convertToCustomFormat(dateFrom);
   const timeTo = convertToCustomFormat(dateTo);
 
@@ -59,7 +64,15 @@ function createFormTemplate(point) {
   }
 
   const offersGroupHTML = createEventOffersGroup(offers);
-
+  // нужен ли нам этот ID может делать сортировку по id
+  function openClouseEvent(ID){
+    if (!ID){
+      return`
+        <button class="event__rollup-btn" type="button">
+          <span class="visually-hidden">Open event</span>
+        </button>`;
+    }
+  }
   return (
     `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -108,7 +121,8 @@ function createFormTemplate(point) {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Cancel</button>
+          <button class="event__reset-btn" type="reset">${!ID ? Mode.CREATE : Mode.EDIT }</button>
+          ${openClouseEvent()}
         </header>
         <section class="event__details">
           <section class="event__section  event__section--offers">
@@ -141,12 +155,15 @@ function createFormTemplate(point) {
 export default class ListFormView extends AbstractView{
   #point = null;
   #handleOnFormSubmit = null;
+  #handleOnClick = null;
 
-  constructor({point = DEFAULT__POINT, onFormSubmit}){
+  constructor({point = DEFAULT__POINT, onClickButton, onFormSubmit}){
     super();
     this.#point = point;
     this.#handleOnFormSubmit = onFormSubmit;
+    this.#handleOnClick = onClickButton;
 
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandle);
   }
 
@@ -156,7 +173,12 @@ export default class ListFormView extends AbstractView{
 
   #formSubmitHandle = (evt) => {
     evt.preventDefault();
-    this.#handleOnFormSubmit();
+    this.#handleOnFormSubmit(this.#point);
+  };
+
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleOnClick();
 
   };
 }

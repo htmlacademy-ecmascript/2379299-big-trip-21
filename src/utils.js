@@ -60,4 +60,8 @@ function convertToCustomFormat(isoDate) {
   return formattedDate;
 }
 
-export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat, convertToCustomFormat};
+function updateItem(items, update) {
+  return items.map((item) => item.id === update.id ? update : item);
+}
+
+export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat, convertToCustomFormat, updateItem};

@@ -1,22 +1,71 @@
-import ListEventInfoView from '../view/event-info-view.js';
-import ListFilterView from '../view/list-filter-view.js';
-import {render, RenderPosition} from '../framework/render.js';
-
+import ListContainerForEvent from '../view/container-for-event';
+import ListSortView from '../view/list-sort-view.js';
+import {render} from '../framework/render.js';
+import ListEmptyView from '../view/list-empty-view.js';
+import EventPresenter from './event-presenter.js';
+import {updateItem} from '../utils.js';
 
 export default class MainPresenter {
-  #siteMainContainer = null;
+  #container = null;
+  #pointModel = null;
 
-  #listInfo = new ListEventInfoView();
-  #ListFilter = new ListFilterView();
+  #listSort = new ListSortView();
+  #listEmpty = new ListEmptyView();
+  #containerForEvent = new ListContainerForEvent();
+  #boardPoints = [];
+  #allPoints = new Map();
 
-  constructor({siteMainContainer}){
-    this.#siteMainContainer = siteMainContainer;
+  constructor({container, pointModel}){
+    this.#container = container;
+    this.#pointModel = pointModel;
+  }
+
+  #renderSort(){
+    render(this.#listSort, this.#container);
+  }
+
+  #renderEmpty(){
+    render(this.#listEmpty, this.#container);
   }
 
   init(){
-    render(this.#listInfo, this.#siteMainContainer, RenderPosition.AFTERBEGIN);
-    render(this.#ListFilter, this.#siteMainContainer);
-  }
-}
+    this.#boardPoints = [...this.#pointModel.points];
+    this.#renderSort();
+    if (!this.#boardPoints.length){
+      this.#renderEmpty();
+      return;
+    }
 
+    render(this.#containerForEvent, this.#container);
+    for (let i = 0; i < this.#boardPoints.length; i++) {
+      this.#renderPoint(this.#boardPoints[i]);
+    }
+  }
+
+  #handlePointChange = (updatePoint) => {
+    this.#boardPoints = updateItem(this.#boardPoints, updatePoint);
+    this.#allPoints.get(updatePoint.ID).init(updatePoint);
+  };
+
+  #renderPoint(point){
+    const pointPresentor = new EventPresenter({
+      containerForEvent: this.#containerForEvent.element,
+      onPointChange: this.#handlePointChange,
+      onModeChange: this.#hendleModeChange
+    });
+
+    pointPresentor.init(point);
+    this.#allPoints.set(point.ID, pointPresentor);
+
+  }
+
+  #clearPointList() {
+    this.#allPoints.forEach((presenter) => presenter.destroy());
+    this.#allPoints.clear();
+  }
+
+  #hendleModeChange = () => {
+    this.#allPoints.forEach((presenter) => presenter.resetView());
+  };
+}
 
