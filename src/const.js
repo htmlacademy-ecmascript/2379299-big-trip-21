@@ -72,4 +72,13 @@ const PHOTO__DESCRIPTIONS = [
   'Cobblestone streets',
   'City skyline at dusk'
 ];
-export {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS, FILTER, SORT, SortType };
+
+const TITLE = [
+  'FastPass+',
+  'VIP Lounge',
+  'Free Refill',
+  'Early Access',
+  'Bonus Gift'
+];
+
+export {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS, FILTER, SORT, SortType, TITLE };

@@ -1,7 +1,12 @@
 import { POINT__TYPE, DESTINATION } from '../const.js';
-import AbstractView from '../framework/view/abstract-stateful-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {convertToCustomFormat} from '../utils.js';
 import {allOffers} from '../mock/point.js';
+
+function findOffersCurrentType(Offers, targetType) {
+  const matchedType = Offers.find((offerGroup) => offerGroup.type === targetType);
+  return matchedType ? matchedType.offers : [];
+}
 
 const Mode = {
   CREATE: 'Cancel',
@@ -23,6 +28,7 @@ function createFormTemplate(point) {
   const timeFrom = convertToCustomFormat(dateFrom);
   const timeTo = convertToCustomFormat(dateTo);
 
+
   const currentDestinationPictures = destination.pictures.reduce((result, item) => {
     const {src, description} = item;
     result += `<img class="event__photo" src="${src}" alt="${description}">`;
@@ -42,28 +48,31 @@ function createFormTemplate(point) {
     result += `<option value="${item}"></option>`;
     return result;
   }, '');
-  function createEventOffersGroup(currentOffers){
-    const offersGroup = allOffers.reduce((result, item) => {
-      item.offers.forEach((offer) => {
-        const { title, price } = offer;
-        const titleKey = title.toLowerCase();
-        const currentOffer = currentOffers.find((el)=> el.title === title);
-        result += `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${titleKey}-1" type="checkbox" name="event-offer-${titleKey}" ${currentOffer ? 'checked' : ''}>
-        <label class="event__offer-label" for="event-offer-${titleKey}-1">
-          <span class="event__offer-title">${title}class</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">${price}</span>
-        </label>
-      </div>`;
-      });
+
+  function createEventOffersGroup(currentType, currentOffers){
+    const offersForType = findOffersCurrentType(allOffers, currentType);
+    const offersGroup = offersForType.reduce((result, item) => {
+
+      const { title, price, id } = item;
+      const titleKey = title.toLowerCase();
+      const currentOffer = currentOffers.find((el)=> el.id === id);
+      result += `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${titleKey}-1" type="checkbox" name="event-offer-${titleKey}" ${currentOffer ? 'checked' : ''}>
+      <label class="event__offer-label" for="event-offer-${titleKey}-1">
+        <span class="event__offer-title">${title}class</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${price}</span>
+      </label>
+    </div>`;
+
       return result;
     }, '');
 
     return offersGroup;
   }
 
-  const offersGroupHTML = createEventOffersGroup(offers);
+  const offersGroupHTML = createEventOffersGroup(type, offers);
+
   // нужен ли нам этот ID может делать сортировку по id
   function openClouseEvent(ID){
     if (!ID){
@@ -152,33 +161,73 @@ function createFormTemplate(point) {
   );
 }
 
-export default class ListFormView extends AbstractView{
+export default class ListFormView extends AbstractStatefulView{
   #point = null;
   #handleOnFormSubmit = null;
   #handleOnClick = null;
 
   constructor({point = DEFAULT__POINT, onClickButton, onFormSubmit}){
     super();
-    this.#point = point;
+    this._setState(ListFormView.parseTaskToState(point));
     this.#handleOnFormSubmit = onFormSubmit;
     this.#handleOnClick = onClickButton;
 
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandle);
+    this.element.querySelector('.event__type-wrapper').addEventListener('click', this.#typePointChangeHandler);
+    // this.element.querySelector('.event__type-item').addEventListener('click', this.#destinationChangeHandler);
   }
 
   get template() {
-    return createFormTemplate(this.#point);
+    return createFormTemplate(this._state);
   }
 
   #formSubmitHandle = (evt) => {
     evt.preventDefault();
-    this.#handleOnFormSubmit(this.#point);
+    this.#handleOnFormSubmit(ListFormView.parseStateToTask(this._state));
   };
 
   #clickHandler = (evt) => {
     evt.preventDefault();
     this.#handleOnClick();
   };
+
+  static parseTaskToState(point){
+    return{...point};
+  }
+
+  static parseStateToTask(state) {
+    const point = {...state};
+
+    return point;
+  }
+
+  #typePointChangeHandler = (evt) => {
+    if (evt.target.classList.contains('event__type-label')) {
+      const updatedState = {
+        type: evt.target.textContent,
+        offers: []
+      };
+      this.updateElement(updatedState);
+    }
+  };
+
+
+  #destinationChangeHandler = (evt) => {
+    this.updateElement({
+      destination: evt.target.value,
+    });
+  };
+
+
+  _restoreHandlers() {
+    // Реализуйте этот метод, чтобы восстановить обработчики событий после перерисовки элемента
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandle);
+    this.element.querySelector('.event__type-wrapper').addEventListener('click', this.#typePointChangeHandler);
+    // ... другие обработчики, которые вы хотите восстановить ...
+  }
+
+
 }
 

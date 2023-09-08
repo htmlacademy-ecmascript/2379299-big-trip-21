@@ -66,15 +66,15 @@ function updateItem(items, update) {
 
 
 function getWeightForNullDate(dateA, dateB) {
-  if (dateA === null && dateB === null) {
+  if (!dateA && !dateB) {
     return 0;
   }
 
-  if (dateA === null) {
+  if (!dateA) {
     return 1;
   }
 
-  if (dateB === null) {
+  if (!dateB) {
     return -1;
   }
 
@@ -89,8 +89,8 @@ function sortDay(pointA, pointB) {
 
 function sortTime(pointA, pointB) {
   const durationMinutesA = getDurationInMinutes(pointA.dateFrom, pointA.dateTo);
-  const durationMinutessB = getDurationInMinutes(pointB.dateFrom, pointB.dateTo);
-  return durationMinutesA - durationMinutessB;
+  const durationMinutesB = getDurationInMinutes(pointB.dateFrom, pointB.dateTo);
+  return durationMinutesB - durationMinutesA;
 }
 
 
@@ -98,3 +98,4 @@ function sortPrice(pointA, pointB) {
   return pointB.basePrice - pointA.basePrice;
 }
 export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat, convertToCustomFormat, updateItem, sortDay, sortTime, sortPrice};
+// console.log(3333333333, UniqueRandomGenerator(1, 5))

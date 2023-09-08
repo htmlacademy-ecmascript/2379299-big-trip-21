@@ -1,5 +1,5 @@
 import UniqueRandomGenerator, { getRandomElementFromArray } from '../utils.js';
-import {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS} from '../const.js';
+import {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS, TITLE} from '../const.js';
 import { nanoid } from 'nanoid';
 
 const uniqueRandomGenerator = new UniqueRandomGenerator(1, 100);
@@ -108,44 +108,56 @@ const allDestinations = [
 
 ];
 
-const allOffers = [
+
+const generateOffer = (id) =>(
   {
-    type: getRandomElementFromArray(POINT__TYPE),
-    offers: [
-      {
-        id: 1,
-        title: 'Upgrade 1',
-        price: 120
-      }]
-  },
-  {
-    type: getRandomElementFromArray(POINT__TYPE),
-    offers: [
-      {
-        id: 2,
-        title: 'Upgrade 2',
-        price: 220
-      }]
-  },
-  {
-    type: getRandomElementFromArray(POINT__TYPE),
-    offers: [
-      {
-        id: 3,
-        title: 'Upgrade 3',
-        price: 320
-      }]
-  },
-  {
-    type: getRandomElementFromArray(POINT__TYPE),
-    offers: [
-      {
-        id: 4,
-        title: 'Upgrade 4',
-        price: 420
-      }]
-  }
-];
+    id: id,
+    title: getRandomElementFromArray(TITLE),
+    price: uniqueRandomGenerator.generate()
+  });
+
+
+const generateAllOffers = (allType) =>(
+  allType.map((currentType) => ({
+    type: currentType,
+    offers: Array.from({ length: 5 }, (_value, index) => generateOffer(index + 1))
+  }))
+);
+
+
+const allOffers = generateAllOffers (POINT__TYPE);
+
+// const allOffers = [
+//   {
+//     type: taxi
+//     offers: [
+//       {
+//         id: 1,
+//         title: getRandomElementFromArray(TITLE),
+//         price: uniqueRandomGenerator.generate()
+//       },
+//       {
+//         id: 2,
+//         title: getRandomElementFromArray(TITLE),
+//         price: uniqueRandomGenerator.generate()
+//       },
+//       {
+//         id: 3,
+//         title: getRandomElementFromArray(TITLE),
+//         price: uniqueRandomGenerator.generate()
+//       },
+//       {
+//         id: 4,
+//         title: getRandomElementFromArray(TITLE),
+//         price: uniqueRandomGenerator.generate()
+//       },
+//       {
+//         id: 5,
+//         title: getRandomElementFromArray(TITLE),
+//         price: uniqueRandomGenerator.generate()
+//       }]
+//   }
+// ];
 
 const points = [
   {
@@ -155,7 +167,7 @@ const points = [
     dateTo:  '2019-07-11T11:22:13.375Z',
     destination: 11,
     isFavorite: false,
-    offers: [1, 2],
+    offers: [1],
     type: getRandomElementFromArray(POINT__TYPE)
   },
   {
@@ -165,7 +177,7 @@ const points = [
     dateTo: '2019-08-11T11:44:13.375Z',
     destination: 12,
     isFavorite: true,
-    offers: [2],
+    offers: [2,3],
     type: getRandomElementFromArray(POINT__TYPE)
   },
   {
@@ -175,7 +187,7 @@ const points = [
     dateTo: '2019-09-11T11:22:15.375Z',
     destination: 13,
     isFavorite: false,
-    offers: [3],
+    offers: [4,1,5],
     type: getRandomElementFromArray(POINT__TYPE)
   },
   {
@@ -185,7 +197,7 @@ const points = [
     dateTo: '2019-07-13T11:12:33.375Z',
     destination: 14,
     isFavorite: false,
-    offers: [4],
+    offers: [5,3,2],
     type: getRandomElementFromArray(POINT__TYPE)
   }
 
