@@ -172,9 +172,9 @@ export default class ListFormView extends AbstractStatefulView{
     this.#handleOnFormSubmit = onFormSubmit;
     this.#handleOnClick = onClickButton;
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
-    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandle);
-    this.element.querySelector('.event__type-wrapper').addEventListener('click', this.#typePointChangeHandler);
+    this._restoreHandlers();
+
+
     // this.element.querySelector('.event__type-item').addEventListener('click', this.#destinationChangeHandler);
   }
 
@@ -182,9 +182,17 @@ export default class ListFormView extends AbstractStatefulView{
     return createFormTemplate(this._state);
   }
 
+  _restoreHandlers = () => {
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandle);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
+    this.element.querySelector('.event__type-wrapper').addEventListener('click', this.#typePointChangeHandler);
+  };
+
   #formSubmitHandle = (evt) => {
     evt.preventDefault();
     this.#handleOnFormSubmit(ListFormView.parseStateToTask(this._state));
+
   };
 
   #clickHandler = (evt) => {
@@ -202,6 +210,14 @@ export default class ListFormView extends AbstractStatefulView{
     return point;
   }
 
+  #priceInputHandler = (evt) => {
+    this._setState({
+      price: evt.target.value,
+    });
+    console.log(this._state);
+  };
+
+
   #typePointChangeHandler = (evt) => {
     if (evt.target.classList.contains('event__type-label')) {
       const updatedState = {
@@ -218,16 +234,6 @@ export default class ListFormView extends AbstractStatefulView{
       destination: evt.target.value,
     });
   };
-
-
-  _restoreHandlers() {
-    // Реализуйте этот метод, чтобы восстановить обработчики событий после перерисовки элемента
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
-    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandle);
-    this.element.querySelector('.event__type-wrapper').addEventListener('click', this.#typePointChangeHandler);
-    // ... другие обработчики, которые вы хотите восстановить ...
-  }
-
 
 }
 

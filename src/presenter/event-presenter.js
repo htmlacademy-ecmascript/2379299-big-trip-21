@@ -80,6 +80,7 @@ export default class EventPresenter {
   };
 
   #handleOnFormSubmit = (point) => {
+    console.log('!2!2!2!!!!!!!!!',point )
     this.#replaceFormToPoint();
     this.#hendlePointChange(point);
   };
