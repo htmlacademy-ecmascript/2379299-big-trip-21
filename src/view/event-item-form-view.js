@@ -1,7 +1,7 @@
 import { POINT__TYPE, DESTINATION } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {convertToCustomFormat} from '../utils.js';
-import {allOffers, allDestinations, allOfferssssssssssss} from '../mock/point.js';
+import {allDestinations, getCurrentOffers} from '../mock/point.js';
 
 
 // function findOffersCurrentType(Offers, targetType) {
@@ -29,6 +29,7 @@ const DEFAULT__POINT = {
 
 function createFormTemplate(point) {
   const{destination, type, dateFrom, dateTo, price, offers, id} = point;
+  console.log(5555555555555555555,point)
   const timeFrom = convertToCustomFormat(dateFrom);
   const timeTo = convertToCustomFormat(dateTo);
 
@@ -52,22 +53,17 @@ function createFormTemplate(point) {
     return result;
   }, '');
 
-
-
-
   function createEventOffersGroup(offers){
-    const offersGroup = allOfferssssssssssss.reduce((result, item) => {
-      const {title, price, id} = item;
-      const titleKey = title.toLowerCase();
-      
-      const currentOffer = offers.offers.find((el) => el.id === id);
+    const offersGroup = getCurrentOffers(type).offers.reduce((result, offerItem) => {
+      const isActive = offers.find((el) => el.id === offerItem.id) !== undefined;
 
+      const titleKey = offerItem.title.toLowerCase();
       result += `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${titleKey}-1" type="checkbox" name="event-offer-${titleKey}" ${currentOffer ? 'checked' : ''}>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${titleKey}-1" type="checkbox" name="event-offer-${titleKey}" ${(isActive) ? 'checked' : ''}>
       <label class="event__offer-label" for="event-offer-${titleKey}-1">
-        <span class="event__offer-title">${title}class</span>
+        <span class="event__offer-title">${offerItem.title}class</span>
         &plus;&euro;&nbsp;
-        <span class="event__offer-price">${price}</span>
+        <span class="event__offer-price">${offerItem.price}</span>
       </label>
     </div>`;
 
@@ -225,8 +221,7 @@ export default class ListFormView extends AbstractStatefulView{
     if (evt.target.classList.contains('event__type-label')) {
       const updatedState = {
         type: evt.target.textContent,
-
-        offers: allOfferssssssssssss.find((allOffer) => allOffer.type === evt.target.textContent)
+        offers: []
       };
 
       this.updateElement(updatedState);
@@ -236,18 +231,15 @@ export default class ListFormView extends AbstractStatefulView{
 
   #destinationChangeHandler = (evt) => {
     const currentDestination = allDestinations.find((destinations) => destinations.name === evt.target.value);
-    console.log('city', currentDestination)
+    if(currentDestination === undefined){
+      return;
+    }
+    const updatedState = {
+      destination: currentDestination
+    };
+    this.updateElement(updatedState);
+
   };
 
 }
-// const currentOffer = currentOffers.find((el) => el.id === id);
-// function findOffersCurrentType(Offers, targetType) {
-//   const matchedType = Offers.find((offerGroup) => offerGroup.type === targetType);
-//   return matchedType ? matchedType.offers : [];
-// }
 
-// function findIdCurrentDestination (allDestinations, Destinations) {
-//   const matchedType = allDestinations.find((destinations) => offerGroup.type === targetType);
-//   return matchedType ? matchedType.offers : [];
-// }
-// function findIDCurrentDestination

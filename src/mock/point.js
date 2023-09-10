@@ -21,7 +21,7 @@ const generateAllDestinations = (destinations) =>(
 );
 
 const allDestinations = generateAllDestinations(DESTINATION);
-
+console.log(555555555, allDestinations)
 
 const generateOfferrrrrrrrrrr = () =>(
   TITLE.map((currentOffer) => ({
@@ -65,7 +65,10 @@ function getCurrentOffers(type) {
 
 const getPoint = () => {
   const activeType = getRandomElementFromArray(POINT__TYPE);
-  const allOffersType = getCurrentOffers(activeType);
+  const allOffersInType = getCurrentOffers(activeType);
+
+  const count = Math.floor(Math.random() * (allOffersInType.offers.length + 1));
+  const activeOffers = allOffersInType.offers.slice(0, count);
 
   return({
     id: uniqueRandomGenerator.generate(),
@@ -74,10 +77,10 @@ const getPoint = () => {
     dateTo:  getRandomElementFromArray(DATES_TO),
     destination: getRandomElementFromArray(allDestinations),
     isFavorite: false,
-    offers:allOffersType ,
+    offers: activeOffers,
     type: activeType
   });
 };
- console.log( 5555555555555555555555, allOfferssssssssssss)
-export {getPoint, allOffers, allDestinations, allOfferssssssssssss};
+
+export {getPoint, allOffers, allDestinations, getCurrentOffers};
 

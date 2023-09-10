@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-stateful-view.js';
-import { allOffers } from '../mock/point.js';
+// import { allOffers } from '../mock/point.js';
 import {formatDateMonth, formatTime, getDurationInMinutes, convertMinutesToHoursFormat} from '../utils.js';
 
 function createEventItemTemplate(point) {
@@ -12,8 +12,7 @@ function createEventItemTemplate(point) {
   const favoriteClass = isFavorite ? 'event__favorite-btn event__favorite-btn--active' : 'event__favorite-btn';
   const typeKey = type.toLowerCase();
 
-
-  const offersGroup = offers.offers.reduce((result, item) => {
+  const offersGroup = offers.reduce((result, item) => {
     result += `<li class="event__offer">
     <span class="event__offer-title">${item.title}</span>
     &plus;&euro;&nbsp;
