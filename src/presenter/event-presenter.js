@@ -26,7 +26,7 @@ export default class EventPresenter {
 
   init(point){
     this.#point = point;
-
+console.log(99999999999999999999999999999)
     const prevPointItem = this.#pointItem;
     const prevPointForm = this.#pointForm;
 
@@ -80,7 +80,6 @@ export default class EventPresenter {
   };
 
   #handleOnFormSubmit = (point) => {
-    console.log('!2!2!2!!!!!!!!!',point )
     this.#replaceFormToPoint();
     this.#hendlePointChange(point);
   };

@@ -24,6 +24,11 @@ export default class UniqueRandomGenerator {
   }
 }
 
+function getRandomElement(array) {
+  const shuffled = array.sort(() => 0.5 - Math.random());
+  const selected = shuffled.slice(0, Math.random() > 0.5 ? 2 : 3);
+  return selected.join(', ');
+}
 function getRandomElementFromArray(array) {
   const randomIndex = Math.floor(Math.random() * array.length);
   return array[randomIndex];
@@ -64,7 +69,6 @@ function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
-
 function getWeightForNullDate(dateA, dateB) {
   if (!dateA && !dateB) {
     return 0;
@@ -93,9 +97,8 @@ function sortTime(pointA, pointB) {
   return durationMinutesB - durationMinutesA;
 }
 
-
 function sortPrice(pointA, pointB) {
-  return pointB.basePrice - pointA.basePrice;
+  return pointB.price - pointA.price;
 }
-export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat, convertToCustomFormat, updateItem, sortDay, sortTime, sortPrice};
-// console.log(3333333333, UniqueRandomGenerator(1, 5))
+export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat, convertToCustomFormat, updateItem, sortDay, sortTime, sortPrice, getRandomElement};
+

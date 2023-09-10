@@ -1,8 +1,9 @@
 import AbstractView from '../framework/view/abstract-stateful-view.js';
+import { allOffers } from '../mock/point.js';
 import {formatDateMonth, formatTime, getDurationInMinutes, convertMinutesToHoursFormat} from '../utils.js';
 
 function createEventItemTemplate(point) {
-  const {basePrice, destination, type, dateFrom, dateTo, isFavorite, offers} = point;
+  const {price, destination, type, dateFrom, dateTo, isFavorite, offers} = point;
   const dateMonth = formatDateMonth(dateFrom);
   const timeFrom = formatTime(dateFrom);
   const timeTo = formatTime(dateTo);
@@ -11,14 +12,25 @@ function createEventItemTemplate(point) {
   const favoriteClass = isFavorite ? 'event__favorite-btn event__favorite-btn--active' : 'event__favorite-btn';
   const typeKey = type.toLowerCase();
 
-  const typeGroupOffers = offers.reduce((result, item) => {
+
+  const offersGroup = offers.offers.reduce((result, item) => {
     result += `<li class="event__offer">
-      <span class="event__offer-title">${item.title}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${item.price}</span>
-      </li>`;
+    <span class="event__offer-title">${item.title}</span>
+    &plus;&euro;&nbsp;
+    <span class="event__offer-price">${item.price}</span>
+    </li>`;
     return result;
   }, '');
+
+
+  // const typeGroupOffers = offers.reduce((result, item) => {
+  //   result += `<li class="event__offer">
+  //     <span class="event__offer-title">${item.title}</span>
+  //     &plus;&euro;&nbsp;
+  //     <span class="event__offer-price">${item.price}</span>
+  //     </li>`;
+  //   return result;
+  // }, '');
 
   return (
     `<li class="trip-events__item">
@@ -37,11 +49,11 @@ function createEventItemTemplate(point) {
           <p class="event__duration">${timeInterval}</p>
         </div>
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
+          &euro;&nbsp;<span class="event__price-value">${price}</span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${typeGroupOffers}
+          ${offersGroup}
         </ul>
         <button class="${favoriteClass}" type="button">
           <span class="visually-hidden">Add to favorite</span>

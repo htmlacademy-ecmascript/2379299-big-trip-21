@@ -1,12 +1,16 @@
 import { POINT__TYPE, DESTINATION } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {convertToCustomFormat} from '../utils.js';
-import {allOffers} from '../mock/point.js';
+import {allOffers, allDestinations, allOfferssssssssssss} from '../mock/point.js';
 
-function findOffersCurrentType(Offers, targetType) {
-  const matchedType = Offers.find((offerGroup) => offerGroup.type === targetType);
-  return matchedType ? matchedType.offers : [];
-}
+
+// function findOffersCurrentType(Offers, targetType) {
+//   console.log(111111111111111, Offers,111111111111 targetType)
+
+//   const matchedType = Offers.find((offerGroup) => offerGroup.type === targetType);
+
+//   return matchedType ? matchedType.offers : [];
+// }
 
 const Mode = {
   CREATE: 'Cancel',
@@ -14,7 +18,7 @@ const Mode = {
 };
 
 const DEFAULT__POINT = {
-  basePrice: 1100,
+  price: 1100,
   dateFrom: '2019-07-10T22:55:56.845Z',
   dateTo:  '2019-07-11T11:22:13.375Z',
   destination: 11,
@@ -24,10 +28,9 @@ const DEFAULT__POINT = {
 };
 
 function createFormTemplate(point) {
-  const{destination, type, dateFrom, dateTo, basePrice, offers, ID} = point;
+  const{destination, type, dateFrom, dateTo, price, offers, id} = point;
   const timeFrom = convertToCustomFormat(dateFrom);
   const timeTo = convertToCustomFormat(dateTo);
-
 
   const currentDestinationPictures = destination.pictures.reduce((result, item) => {
     const {src, description} = item;
@@ -49,13 +52,16 @@ function createFormTemplate(point) {
     return result;
   }, '');
 
-  function createEventOffersGroup(currentType, currentOffers){
-    const offersForType = findOffersCurrentType(allOffers, currentType);
-    const offersGroup = offersForType.reduce((result, item) => {
 
-      const { title, price, id } = item;
+
+
+  function createEventOffersGroup(offers){
+    const offersGroup = allOfferssssssssssss.reduce((result, item) => {
+      const {title, price, id} = item;
       const titleKey = title.toLowerCase();
-      const currentOffer = currentOffers.find((el)=> el.id === id);
+      
+      const currentOffer = offers.offers.find((el) => el.id === id);
+
       result += `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${titleKey}-1" type="checkbox" name="event-offer-${titleKey}" ${currentOffer ? 'checked' : ''}>
       <label class="event__offer-label" for="event-offer-${titleKey}-1">
@@ -71,11 +77,11 @@ function createFormTemplate(point) {
     return offersGroup;
   }
 
-  const offersGroupHTML = createEventOffersGroup(type, offers);
+  const offersGroupHTML = createEventOffersGroup(offers);
 
   // нужен ли нам этот ID может делать сортировку по id
-  function openClouseEvent(ID){
-    if (!ID){
+  function openClouseEvent(id){
+    if (!id){
       return`
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
@@ -126,11 +132,11 @@ function createFormTemplate(point) {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">${!ID ? Mode.CREATE : Mode.EDIT }</button>
+          <button class="event__reset-btn" type="reset">${!id ? Mode.CREATE : Mode.EDIT }</button>
           ${openClouseEvent()}
         </header>
         <section class="event__details">
@@ -173,9 +179,6 @@ export default class ListFormView extends AbstractStatefulView{
     this.#handleOnClick = onClickButton;
 
     this._restoreHandlers();
-
-
-    // this.element.querySelector('.event__type-item').addEventListener('click', this.#destinationChangeHandler);
   }
 
   get template() {
@@ -187,6 +190,7 @@ export default class ListFormView extends AbstractStatefulView{
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandle);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
     this.element.querySelector('.event__type-wrapper').addEventListener('click', this.#typePointChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('input', this.#destinationChangeHandler);
   };
 
   #formSubmitHandle = (evt) => {
@@ -214,7 +218,6 @@ export default class ListFormView extends AbstractStatefulView{
     this._setState({
       price: evt.target.value,
     });
-    console.log(this._state);
   };
 
 
@@ -222,18 +225,29 @@ export default class ListFormView extends AbstractStatefulView{
     if (evt.target.classList.contains('event__type-label')) {
       const updatedState = {
         type: evt.target.textContent,
-        offers: []
+
+        offers: allOfferssssssssssss.find((allOffer) => allOffer.type === evt.target.textContent)
       };
+
       this.updateElement(updatedState);
     }
   };
 
 
   #destinationChangeHandler = (evt) => {
-    this.updateElement({
-      destination: evt.target.value,
-    });
+    const currentDestination = allDestinations.find((destinations) => destinations.name === evt.target.value);
+    console.log('city', currentDestination)
   };
 
 }
+// const currentOffer = currentOffers.find((el) => el.id === id);
+// function findOffersCurrentType(Offers, targetType) {
+//   const matchedType = Offers.find((offerGroup) => offerGroup.type === targetType);
+//   return matchedType ? matchedType.offers : [];
+// }
 
+// function findIdCurrentDestination (allDestinations, Destinations) {
+//   const matchedType = allDestinations.find((destinations) => offerGroup.type === targetType);
+//   return matchedType ? matchedType.offers : [];
+// }
+// function findIDCurrentDestination

@@ -66,11 +66,8 @@ export default class MainPresenter {
   }
 
   #handlePointChange = (updatePoint) => {
-    console.log('updatePoint', updatePoint);
     this.#boardPoints = updateItem(this.#boardPoints, updatePoint);
-    this.#allPoints.get(updatePoint.ID).init(updatePoint);
-    console.log('this.#boardPointstttttttttttttttttttttttt ', updatePoint.ID,"2" ,this.#allPoints );
-
+    this.#allPoints.get(updatePoint.id).init(updatePoint);
   };
 
   #renderPointsList(){
@@ -89,8 +86,7 @@ export default class MainPresenter {
     });
 
     pointPresentor.init(point);
-    this.#allPoints.set(point.ID, pointPresentor);
-    console.log(999999999999999999999)
+    this.#allPoints.set(point.id, pointPresentor);
   }
 
   #clearPointList() {
