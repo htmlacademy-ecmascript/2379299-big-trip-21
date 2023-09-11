@@ -26,7 +26,7 @@ export default class EventPresenter {
 
   init(point){
     this.#point = point;
-
+console.log(99999999999999999999999999999)
     const prevPointItem = this.#pointItem;
     const prevPointForm = this.#pointForm;
 

@@ -24,6 +24,11 @@ export default class UniqueRandomGenerator {
   }
 }
 
+function getRandomElement(array) {
+  const shuffled = array.sort(() => 0.5 - Math.random());
+  const selected = shuffled.slice(0, Math.random() > 0.5 ? 2 : 3);
+  return selected.join(', ');
+}
 function getRandomElementFromArray(array) {
   const randomIndex = Math.floor(Math.random() * array.length);
   return array[randomIndex];
@@ -64,17 +69,16 @@ function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
-
 function getWeightForNullDate(dateA, dateB) {
-  if (dateA === null && dateB === null) {
+  if (!dateA && !dateB) {
     return 0;
   }
 
-  if (dateA === null) {
+  if (!dateA) {
     return 1;
   }
 
-  if (dateB === null) {
+  if (!dateB) {
     return -1;
   }
 
@@ -89,12 +93,12 @@ function sortDay(pointA, pointB) {
 
 function sortTime(pointA, pointB) {
   const durationMinutesA = getDurationInMinutes(pointA.dateFrom, pointA.dateTo);
-  const durationMinutessB = getDurationInMinutes(pointB.dateFrom, pointB.dateTo);
-  return durationMinutesA - durationMinutessB;
+  const durationMinutesB = getDurationInMinutes(pointB.dateFrom, pointB.dateTo);
+  return durationMinutesB - durationMinutesA;
 }
-
 
 function sortPrice(pointA, pointB) {
-  return pointB.basePrice - pointA.basePrice;
+  return pointB.price - pointA.price;
 }
-export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat, convertToCustomFormat, updateItem, sortDay, sortTime, sortPrice};
+export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat, convertToCustomFormat, updateItem, sortDay, sortTime, sortPrice, getRandomElement};
+

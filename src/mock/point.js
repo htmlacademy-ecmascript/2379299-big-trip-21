@@ -1,221 +1,86 @@
-import UniqueRandomGenerator, { getRandomElementFromArray } from '../utils.js';
-import {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS} from '../const.js';
-import { nanoid } from 'nanoid';
+import UniqueRandomGenerator, { getRandomElementFromArray} from '../utils.js';
+import {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS, TITLE, DATES_FROM, DATES_TO} from '../const.js';
 
-const uniqueRandomGenerator = new UniqueRandomGenerator(1, 100);
-
-const allDestinations = [
-  {
-    id: 11,
-    description: getRandomElementFromArray(CITY__DESCRIPTIONS),
-    name: getRandomElementFromArray(DESTINATION),
-    pictures: [
-      {
-        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
-        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
-      },
-      {
-        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
-        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
-      },
-      {
-        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
-        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
-      },
-      {
-        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
-        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
-      }
-    ]
-  },
-  {
-    id: 12,
-    description: getRandomElementFromArray(CITY__DESCRIPTIONS),
-    name: getRandomElementFromArray(DESTINATION),
-    pictures: [
-      {
-        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
-        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
-      },
-      {
-        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
-        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
-      },
-      {
-        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
-        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
-      },
-      {
-        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
-        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
-      },
-      {
-        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
-        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
-      }
-    ]
-  },
-  {
-    id: 13,
-    description: getRandomElementFromArray(CITY__DESCRIPTIONS),
-    name: getRandomElementFromArray(DESTINATION),
-    pictures: [
-      {
-        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
-        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
-      },
-      {
-        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
-        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
-      },
-      {
-        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
-        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
-      },
-      {
-        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
-        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
-      }
-    ]
-  },
-  {
-    id: 14,
-    description: getRandomElementFromArray(CITY__DESCRIPTIONS),
-    name: getRandomElementFromArray(DESTINATION),
-    pictures: [
-      {
-        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
-        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
-      },
-      {
-        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
-        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
-      },
-      {
-        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
-        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
-      },
-      {
-        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
-        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
-      },
-      {
-        src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
-        description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
-      }
-    ]
-  }
-
-];
-
-const allOffers = [
-  {
-    type: getRandomElementFromArray(POINT__TYPE),
-    offers: [
-      {
-        id: 1,
-        title: 'Upgrade 1',
-        price: 120
-      }]
-  },
-  {
-    type: getRandomElementFromArray(POINT__TYPE),
-    offers: [
-      {
-        id: 2,
-        title: 'Upgrade 2',
-        price: 220
-      }]
-  },
-  {
-    type: getRandomElementFromArray(POINT__TYPE),
-    offers: [
-      {
-        id: 3,
-        title: 'Upgrade 3',
-        price: 320
-      }]
-  },
-  {
-    type: getRandomElementFromArray(POINT__TYPE),
-    offers: [
-      {
-        id: 4,
-        title: 'Upgrade 4',
-        price: 420
-      }]
-  }
-];
-
-const points = [
-  {
-    id: uniqueRandomGenerator.generate(),
-    basePrice: 1100,
-    dateFrom: '2019-07-10T22:55:56.845Z',
-    dateTo:  '2019-07-11T11:22:13.375Z',
-    destination: 11,
-    isFavorite: false,
-    offers: [1, 2],
-    type: getRandomElementFromArray(POINT__TYPE)
-  },
-  {
-    id: uniqueRandomGenerator.generate(),
-    basePrice: 2100,
-    dateFrom: '2019-08-10T10:44:56.845Z',
-    dateTo: '2019-08-11T11:44:13.375Z',
-    destination: 12,
-    isFavorite: true,
-    offers: [2],
-    type: getRandomElementFromArray(POINT__TYPE)
-  },
-  {
-    id: uniqueRandomGenerator.generate(),
-    basePrice: 3100,
-    dateFrom: '2019-09-10T20:55:56.845Z',
-    dateTo: '2019-09-11T11:22:15.375Z',
-    destination: 13,
-    isFavorite: false,
-    offers: [3],
-    type: getRandomElementFromArray(POINT__TYPE)
-  },
-  {
-    id: uniqueRandomGenerator.generate(),
-    basePrice: 4100,
-    dateFrom: '2019-07-12T12:45:56.845Z',
-    dateTo: '2019-07-13T11:12:33.375Z',
-    destination: 14,
-    isFavorite: false,
-    offers: [4],
-    type: getRandomElementFromArray(POINT__TYPE)
-  }
+const uniqueRandomGenerator = new UniqueRandomGenerator(1, 10000);
 
 
-];
 
-function getPoints() {
-  return points.map((el) => {
-    el.offers = el.offers.map((id) => {
-      for (const offerContainer of allOffers) {
-        const foundOffer = offerContainer.offers.find((offer) => offer.id === id);
-        if (foundOffer) {
-          return foundOffer;
-        }
-      }
-      return null;
-    });
-    el.destination = allDestinations.find((destination) => destination.id === el.destination);
-    return el;
+const generatePictures = () =>(
+  {
+    src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
+    description: getRandomElementFromArray(PHOTO__DESCRIPTIONS)
   });
+
+const generateAllDestinations = (destinations) =>(
+  destinations.map((currentDestinations, id) => ({
+    id: id + 1,
+    description: getRandomElementFromArray(CITY__DESCRIPTIONS),
+    name: currentDestinations,
+    pictures: Array.from({ length: 4 }, () => generatePictures())
+  }))
+);
+
+const allDestinations = generateAllDestinations(DESTINATION);
+console.log(555555555, allDestinations)
+
+const generateOfferrrrrrrrrrr = () =>(
+  TITLE.map((currentOffer) => ({
+    id: uniqueRandomGenerator.generate(),
+    title: currentOffer,
+    price: uniqueRandomGenerator.generate()
+  }))
+);
+
+const allOfferssssssssssss = generateOfferrrrrrrrrrr(POINT__TYPE);
+
+
+const generateAllOffers = (allType) => {
+  return allType.map((currentType) => {
+    const count = Math.floor(Math.random() * (allOfferssssssssssss.length + 1));
+    const selectedOfferssssss = allOfferssssssssssss.slice(0, count);
+    return {
+      type: currentType,
+      offers: selectedOfferssssss
+    };
+  });
+};
+
+
+
+
+// const generateAllOffers = (allType) =>(
+//   allType.map((currentType) => ({
+//     type: currentType,
+//     offers: selectedOfferssssss
+//   }))
+// );
+
+
+const allOffers = generateAllOffers (POINT__TYPE); //все оферсы с типами
+
+function getCurrentOffers(type) {
+  const currentOffer = allOffers.find((el) => el.type === type);
+  return currentOffer;
 }
 
-const updatedPoints = getPoints();
+const getPoint = () => {
+  const activeType = getRandomElementFromArray(POINT__TYPE);
+  const allOffersInType = getCurrentOffers(activeType);
 
-function getRandomPoint(){
-  return{
-    ID: nanoid(),
-    ...getRandomElementFromArray(updatedPoints)
-  };
-}
+  const count = Math.floor(Math.random() * (allOffersInType.offers.length + 1));
+  const activeOffers = allOffersInType.offers.slice(0, count);
 
-export {getRandomPoint, allOffers};
+  return({
+    id: uniqueRandomGenerator.generate(),
+    price: uniqueRandomGenerator.generate(),
+    dateFrom: getRandomElementFromArray(DATES_FROM),
+    dateTo:  getRandomElementFromArray(DATES_TO),
+    destination: getRandomElementFromArray(allDestinations),
+    isFavorite: false,
+    offers: activeOffers,
+    type: activeType
+  });
+};
+
+export {getPoint, allOffers, allDestinations, getCurrentOffers};
 

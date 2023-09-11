@@ -1,7 +1,16 @@
 import { POINT__TYPE, DESTINATION } from '../const.js';
-import AbstractView from '../framework/view/abstract-stateful-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {convertToCustomFormat} from '../utils.js';
-import {allOffers} from '../mock/point.js';
+import {allDestinations, getCurrentOffers} from '../mock/point.js';
+
+
+// function findOffersCurrentType(Offers, targetType) {
+//   console.log(111111111111111, Offers,111111111111 targetType)
+
+//   const matchedType = Offers.find((offerGroup) => offerGroup.type === targetType);
+
+//   return matchedType ? matchedType.offers : [];
+// }
 
 const Mode = {
   CREATE: 'Cancel',
@@ -9,7 +18,7 @@ const Mode = {
 };
 
 const DEFAULT__POINT = {
-  basePrice: 1100,
+  price: 1100,
   dateFrom: '2019-07-10T22:55:56.845Z',
   dateTo:  '2019-07-11T11:22:13.375Z',
   destination: 11,
@@ -19,7 +28,8 @@ const DEFAULT__POINT = {
 };
 
 function createFormTemplate(point) {
-  const{destination, type, dateFrom, dateTo, basePrice, offers, ID} = point;
+  const{destination, type, dateFrom, dateTo, price, offers, id} = point;
+  console.log(5555555555555555555,point)
   const timeFrom = convertToCustomFormat(dateFrom);
   const timeTo = convertToCustomFormat(dateTo);
 
@@ -42,21 +52,21 @@ function createFormTemplate(point) {
     result += `<option value="${item}"></option>`;
     return result;
   }, '');
-  function createEventOffersGroup(currentOffers){
-    const offersGroup = allOffers.reduce((result, item) => {
-      item.offers.forEach((offer) => {
-        const { title, price } = offer;
-        const titleKey = title.toLowerCase();
-        const currentOffer = currentOffers.find((el)=> el.title === title);
-        result += `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${titleKey}-1" type="checkbox" name="event-offer-${titleKey}" ${currentOffer ? 'checked' : ''}>
-        <label class="event__offer-label" for="event-offer-${titleKey}-1">
-          <span class="event__offer-title">${title}class</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">${price}</span>
-        </label>
-      </div>`;
-      });
+
+  function createEventOffersGroup(offers){
+    const offersGroup = getCurrentOffers(type).offers.reduce((result, offerItem) => {
+      const isActive = offers.find((el) => el.id === offerItem.id) !== undefined;
+
+      const titleKey = offerItem.title.toLowerCase();
+      result += `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${titleKey}-1" type="checkbox" name="event-offer-${titleKey}" ${(isActive) ? 'checked' : ''}>
+      <label class="event__offer-label" for="event-offer-${titleKey}-1">
+        <span class="event__offer-title">${offerItem.title}class</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offerItem.price}</span>
+      </label>
+    </div>`;
+
       return result;
     }, '');
 
@@ -64,9 +74,10 @@ function createFormTemplate(point) {
   }
 
   const offersGroupHTML = createEventOffersGroup(offers);
+
   // нужен ли нам этот ID может делать сортировку по id
-  function openClouseEvent(ID){
-    if (!ID){
+  function openClouseEvent(id){
+    if (!id){
       return`
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
@@ -117,11 +128,11 @@ function createFormTemplate(point) {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">${!ID ? Mode.CREATE : Mode.EDIT }</button>
+          <button class="event__reset-btn" type="reset">${!id ? Mode.CREATE : Mode.EDIT }</button>
           ${openClouseEvent()}
         </header>
         <section class="event__details">
@@ -152,33 +163,83 @@ function createFormTemplate(point) {
   );
 }
 
-export default class ListFormView extends AbstractView{
+export default class ListFormView extends AbstractStatefulView{
   #point = null;
   #handleOnFormSubmit = null;
   #handleOnClick = null;
 
   constructor({point = DEFAULT__POINT, onClickButton, onFormSubmit}){
     super();
-    this.#point = point;
+    this._setState(ListFormView.parseTaskToState(point));
     this.#handleOnFormSubmit = onFormSubmit;
     this.#handleOnClick = onClickButton;
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
-    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandle);
+    this._restoreHandlers();
   }
 
   get template() {
-    return createFormTemplate(this.#point);
+    return createFormTemplate(this._state);
   }
+
+  _restoreHandlers = () => {
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandle);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
+    this.element.querySelector('.event__type-wrapper').addEventListener('click', this.#typePointChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('input', this.#destinationChangeHandler);
+  };
 
   #formSubmitHandle = (evt) => {
     evt.preventDefault();
-    this.#handleOnFormSubmit(this.#point);
+    this.#handleOnFormSubmit(ListFormView.parseStateToTask(this._state));
+
   };
 
   #clickHandler = (evt) => {
     evt.preventDefault();
     this.#handleOnClick();
   };
+
+  static parseTaskToState(point){
+    return{...point};
+  }
+
+  static parseStateToTask(state) {
+    const point = {...state};
+
+    return point;
+  }
+
+  #priceInputHandler = (evt) => {
+    this._setState({
+      price: evt.target.value,
+    });
+  };
+
+
+  #typePointChangeHandler = (evt) => {
+    if (evt.target.classList.contains('event__type-label')) {
+      const updatedState = {
+        type: evt.target.textContent,
+        offers: []
+      };
+
+      this.updateElement(updatedState);
+    }
+  };
+
+
+  #destinationChangeHandler = (evt) => {
+    const currentDestination = allDestinations.find((destinations) => destinations.name === evt.target.value);
+    if(currentDestination === undefined){
+      return;
+    }
+    const updatedState = {
+      destination: currentDestination
+    };
+    this.updateElement(updatedState);
+
+  };
+
 }
 

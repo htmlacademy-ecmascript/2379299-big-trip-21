@@ -47,6 +47,32 @@ const DESTINATION = [
   'Budapest'
 ];
 
+const DATES_FROM = [
+  '2019-07-10T08:15:23.456Z',
+  '2019-07-12T14:34:12.123Z',
+  '2019-07-15T17:55:00.000Z',
+  '2019-07-18T22:23:45.678Z',
+  '2019-07-22T09:10:56.789Z',
+  '2019-07-24T02:55:23.123Z',
+  '2019-07-28T12:34:56.789Z',
+  '2019-07-30T18:45:34.123Z',
+  '2019-08-02T20:15:45.678Z',
+  '2019-08-05T21:25:56.789Z'
+];
+
+const DATES_TO = [
+  '2019-09-10T08:15:23.456Z',
+  '2019-09-12T14:34:12.123Z',
+  '2019-09-15T17:55:00.000Z',
+  '2019-09-18T22:23:45.678Z',
+  '2019-09-22T09:10:56.789Z',
+  '2019-09-24T02:55:23.123Z',
+  '2019-09-28T12:34:56.789Z',
+  '2019-09-30T18:45:34.123Z',
+  '2019-11-02T20:15:45.678Z',
+  '2019-11-05T21:25:56.789Z'
+];
+
 const CITY__DESCRIPTIONS = [
   'A bustling metropolis with a mix of modern skyscrapers and historic temples.',
   'A coastal city known for its picturesque harbors and vibrant nightlife.',
@@ -72,4 +98,13 @@ const PHOTO__DESCRIPTIONS = [
   'Cobblestone streets',
   'City skyline at dusk'
 ];
-export {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS, FILTER, SORT, SortType };
+
+const TITLE = [
+  'FastPass+',
+  'VIP Lounge',
+  'Free Refill',
+  'Early Access',
+  'Bonus Gift'
+];
+
+export {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS, FILTER, SORT, SortType, TITLE, DATES_FROM, DATES_TO};
