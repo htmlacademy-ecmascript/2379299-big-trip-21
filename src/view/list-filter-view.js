@@ -1,7 +1,6 @@
 import {FILTER} from '../const.js';
 import AbstractView from '../framework/view/abstract-stateful-view.js';
 
-
 const filters = FILTER.reduce((result, item) => {
   const itemKey = item.toLowerCase();
   result += `<div class="trip-filters__filter">
@@ -18,7 +17,6 @@ function createListFilterTemplate() {
   </form>`
   );
 }
-
 export default class ListFilterView extends AbstractView{
   get template() {
     return createListFilterTemplate();

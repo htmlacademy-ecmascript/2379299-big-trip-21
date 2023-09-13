@@ -2,19 +2,12 @@ import { POINT__TYPE, DESTINATION } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {convertToCustomFormat} from '../utils.js';
 import {allDestinations, getCurrentOffers} from '../mock/point.js';
-
-
-// function findOffersCurrentType(Offers, targetType) {
-//   console.log(111111111111111, Offers,111111111111 targetType)
-
-//   const matchedType = Offers.find((offerGroup) => offerGroup.type === targetType);
-
-//   return matchedType ? matchedType.offers : [];
-// }
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const Mode = {
   CREATE: 'Cancel',
-  EDIT: 'Delate'
+  EDIT: 'Delete'
 };
 
 const DEFAULT__POINT = {
@@ -29,9 +22,9 @@ const DEFAULT__POINT = {
 
 function createFormTemplate(point) {
   const{destination, type, dateFrom, dateTo, price, offers, id} = point;
-  console.log(5555555555555555555,point)
   const timeFrom = convertToCustomFormat(dateFrom);
   const timeTo = convertToCustomFormat(dateTo);
+  const typeKey = type.toLowerCase();
 
   const currentDestinationPictures = destination.pictures.reduce((result, item) => {
     const {src, description} = item;
@@ -53,9 +46,9 @@ function createFormTemplate(point) {
     return result;
   }, '');
 
-  function createEventOffersGroup(offers){
+  function createEventOffersGroup(allOffers){
     const offersGroup = getCurrentOffers(type).offers.reduce((result, offerItem) => {
-      const isActive = offers.find((el) => el.id === offerItem.id) !== undefined;
+      const isActive = allOffers.find((el) => el.id === offerItem.id) !== undefined;
 
       const titleKey = offerItem.title.toLowerCase();
       result += `<div class="event__offer-selector">
@@ -75,9 +68,8 @@ function createFormTemplate(point) {
 
   const offersGroupHTML = createEventOffersGroup(offers);
 
-  // нужен ли нам этот ID может делать сортировку по id
-  function openClouseEvent(id){
-    if (!id){
+  function openClouseEvent(idPoint){
+    if (!idPoint){
       return`
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
@@ -91,7 +83,7 @@ function createFormTemplate(point) {
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${typeKey}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -145,7 +137,7 @@ function createFormTemplate(point) {
           </section>
 
 
-          <section class="event__section  event__section--destination">
+        <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">${destination.name}</h3>
           <p class="event__destination-description">${destination.description}</p>
 
@@ -155,18 +147,17 @@ function createFormTemplate(point) {
             </div>
           </div>
         </section>
-
-
-        </section>
+      </section>
       </form>
     </li>`
   );
 }
 
 export default class ListFormView extends AbstractStatefulView{
-  #point = null;
+  #datepicker = null;
   #handleOnFormSubmit = null;
   #handleOnClick = null;
+  
 
   constructor({point = DEFAULT__POINT, onClickButton, onFormSubmit}){
     super();
@@ -187,6 +178,7 @@ export default class ListFormView extends AbstractStatefulView{
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceInputHandler);
     this.element.querySelector('.event__type-wrapper').addEventListener('click', this.#typePointChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('input', this.#destinationChangeHandler);
+    this.#setDatepicker();
   };
 
   #formSubmitHandle = (evt) => {
@@ -216,7 +208,6 @@ export default class ListFormView extends AbstractStatefulView{
     });
   };
 
-
   #typePointChangeHandler = (evt) => {
     if (evt.target.classList.contains('event__type-label')) {
       const updatedState = {
@@ -228,10 +219,9 @@ export default class ListFormView extends AbstractStatefulView{
     }
   };
 
-
   #destinationChangeHandler = (evt) => {
     const currentDestination = allDestinations.find((destinations) => destinations.name === evt.target.value);
-    if(currentDestination === undefined){
+    if(!currentDestination){
       return;
     }
     const updatedState = {
@@ -241,5 +231,41 @@ export default class ListFormView extends AbstractStatefulView{
 
   };
 
+  removeElement() {
+    super.removeElement();
+
+    if (this.#datepicker) {
+      this.#datepicker.destroy();
+      this.#datepicker = null;
+    }
+  }
+
+  #dueDateChangeHandler = (userDate, dateStr, attribute) => {
+    const date = convertToCustomFormat(userDate);
+
+    this.updateElement({
+      [attribute]: date,
+    });
+  };
+
+  #setDatepicker() {
+    this.#datepicker = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        dateFormat: 'd/m/Y H:i',
+        enableTime: true,
+        onChange: (selectedDates, dateStr) => this.#dueDateChangeHandler(selectedDates, dateStr, 'dateTo')
+      },
+    );
+
+    this.#datepicker = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        dateFormat: 'd/m/Y H:i',
+        enableTime: true,
+        onChange: (selectedDates, dateStr) => this.#dueDateChangeHandler(selectedDates, dateStr, 'dateFrom')
+      },
+    );
+  }
 }
 

@@ -5,7 +5,6 @@ import ListEmptyView from '../view/list-empty-view.js';
 import EventPresenter from './event-presenter.js';
 import {updateItem, sortDay, sortTime, sortPrice} from '../utils.js';
 import {SortType} from '../const';
-
 export default class MainPresenter {
   #container = null;
   #pointModel = null;
@@ -36,7 +35,6 @@ export default class MainPresenter {
         break;
 
       default:
-
     }
     this.#clearPointList();
     this.#renderPointsList();
@@ -62,7 +60,6 @@ export default class MainPresenter {
     }
     this.#boardPoints.sort(sortDay);
     this.#renderPointsList();
-
   }
 
   #handlePointChange = (updatePoint) => {
@@ -76,7 +73,6 @@ export default class MainPresenter {
       this.#renderPoint(this.#boardPoints[i]);
     }
   }
-
 
   #renderPoint(point){
     const pointPresentor = new EventPresenter({

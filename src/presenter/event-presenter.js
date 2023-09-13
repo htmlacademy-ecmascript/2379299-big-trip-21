@@ -17,7 +17,6 @@ export default class EventPresenter {
   #hendlePointChange = null;
   #hendleModeChange = null;
 
-
   constructor({containerForEvent, onPointChange, onModeChange}){
     this.#containerForEvent = containerForEvent;
     this.#hendlePointChange = onPointChange;
@@ -26,7 +25,6 @@ export default class EventPresenter {
 
   init(point){
     this.#point = point;
-console.log(99999999999999999999999999999)
     const prevPointItem = this.#pointItem;
     const prevPointForm = this.#pointForm;
 
@@ -35,7 +33,6 @@ console.log(99999999999999999999999999999)
       onClick: this.#handleOnClick,
       onFavoriteClick: this.#handleFavoriteClick,
     });
-
 
     this.#pointForm = new ListFormView({
       point: this.#point,
@@ -60,7 +57,6 @@ console.log(99999999999999999999999999999)
 
     remove(prevPointItem);
     remove(prevPointForm);
-
   }
 
   destroy() {

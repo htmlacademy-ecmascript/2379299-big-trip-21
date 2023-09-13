@@ -57,10 +57,10 @@ function convertMinutesToHoursFormat(totalMinutes) {
   return `${padZero(hours)}H ${padZero(minutes)}M`;
 }
 
-function convertToCustomFormat(isoDate) {
+function convertToCustomFormat(isoDate, format = 'DD/MM/YYYY HH:mm') {
   const date = dayjs(isoDate);
 
-  const formattedDate = date.format('DD/MM/YY HH:mm');
+  const formattedDate = date.format(format);
 
   return formattedDate;
 }

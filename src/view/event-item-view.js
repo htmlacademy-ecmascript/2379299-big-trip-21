@@ -1,5 +1,4 @@
 import AbstractView from '../framework/view/abstract-stateful-view.js';
-// import { allOffers } from '../mock/point.js';
 import {formatDateMonth, formatTime, getDurationInMinutes, convertMinutesToHoursFormat} from '../utils.js';
 
 function createEventItemTemplate(point) {
@@ -20,16 +19,6 @@ function createEventItemTemplate(point) {
     </li>`;
     return result;
   }, '');
-
-
-  // const typeGroupOffers = offers.reduce((result, item) => {
-  //   result += `<li class="event__offer">
-  //     <span class="event__offer-title">${item.title}</span>
-  //     &plus;&euro;&nbsp;
-  //     <span class="event__offer-price">${item.price}</span>
-  //     </li>`;
-  //   return result;
-  // }, '');
 
   return (
     `<li class="trip-events__item">
