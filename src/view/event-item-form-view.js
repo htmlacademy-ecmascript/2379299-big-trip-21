@@ -32,7 +32,7 @@ function createFormTemplate(point) {
     return result;
   }, '');
 
-  const typeGroupHTML = POINT__TYPE.reduce((result, item) => {
+  const HTMLGroup = POINT__TYPE.reduce((result, item) => {
     const itemKey = item.toLowerCase();
     result += `<div class="event__type-item">
       <input id="event-type-${itemKey}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${itemKey}"${item === type ? 'checked' : ''} >
@@ -90,8 +90,7 @@ function createFormTemplate(point) {
             <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Event type</legend>
-                ${typeGroupHTML}
-
+                ${HTMLGroup}
 
               </fieldset>
             </div>
@@ -154,10 +153,10 @@ function createFormTemplate(point) {
 }
 
 export default class ListFormView extends AbstractStatefulView{
-  #datepicker = null;
   #handleOnFormSubmit = null;
   #handleOnClick = null;
-  
+  #datepickerFrom = null;
+  #datepickerTo = null;
 
   constructor({point = DEFAULT__POINT, onClickButton, onFormSubmit}){
     super();
@@ -234,38 +233,60 @@ export default class ListFormView extends AbstractStatefulView{
   removeElement() {
     super.removeElement();
 
-    if (this.#datepicker) {
-      this.#datepicker.destroy();
-      this.#datepicker = null;
+    if (this.#datepickerFrom) {
+      this.#datepickerFrom.destroy();
+      this.#datepickerFrom = null;
+    }
+
+    if (this.#datepickerTo) {
+      this.#datepickerTo.destroy();
+      this.#datepickerTo = null;
     }
   }
 
-  #dueDateChangeHandler = (userDate, dateStr, attribute) => {
-    const date = convertToCustomFormat(userDate);
+  #setDatepicker = () => {
+    const dateFromElement = this.element.querySelector('.event__input--time[name="event-start-time"]');
+    const dateToElement = this.element.querySelector('.event__input--time[name="event-end-time"]');
+    const flatpickrConfig = {
+      dateFormat: 'd/m/Y H:i',
+      enableTime: true,
+      locale: {
+        firstDayOfWeek: 1,
+      },
+      'time_24hr': true,
+    };
 
-    this.updateElement({
-      [attribute]: date,
-    });
+    this.#datepickerFrom = flatpickr(
+      dateFromElement, {
+        ...flatpickrConfig,
+        defaultDate: this._state.dateFrom,
+        onClose: this.#dateFromCloseHandler,
+        maxDate: this._state.dateTo
+      }
+    );
+
+    this.#datepickerTo = flatpickr(
+      dateToElement, {
+        ...flatpickrConfig,
+        defaultDate: this._state.dateTo,
+        onClose: this.#dateToCloseHandler,
+        minDate: this._state.dateFrom
+      }
+    );
   };
 
-  #setDatepicker() {
-    this.#datepicker = flatpickr(
-      this.element.querySelector('#event-end-time-1'),
-      {
-        dateFormat: 'd/m/Y H:i',
-        enableTime: true,
-        onChange: (selectedDates, dateStr) => this.#dueDateChangeHandler(selectedDates, dateStr, 'dateTo')
-      },
-    );
+  #dateFromCloseHandler = ([userDate]) => {
+    this._setState({
+      dateFrom: userDate,
+    });
+    this.#datepickerTo.set('minDate', this._state.dateFrom);
+  };
 
-    this.#datepicker = flatpickr(
-      this.element.querySelector('#event-start-time-1'),
-      {
-        dateFormat: 'd/m/Y H:i',
-        enableTime: true,
-        onChange: (selectedDates, dateStr) => this.#dueDateChangeHandler(selectedDates, dateStr, 'dateFrom')
-      },
-    );
-  }
+  #dateToCloseHandler = ([userDate]) => {
+    this._setState({
+      dateTo: userDate
+    });
+    this.#datepickerFrom.set('maxDate', this._state.dateTo);
+  };
 }
 
