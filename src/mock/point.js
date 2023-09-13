@@ -3,8 +3,6 @@ import {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS, TITLE
 
 const uniqueRandomGenerator = new UniqueRandomGenerator(1, 10000);
 
-
-
 const generatePictures = () =>(
   {
     src: `https://loremflickr.com/248/152?random=${uniqueRandomGenerator.generate()}`,
@@ -21,9 +19,8 @@ const generateAllDestinations = (destinations) =>(
 );
 
 const allDestinations = generateAllDestinations(DESTINATION);
-console.log(555555555, allDestinations)
 
-const generateOfferrrrrrrrrrr = () =>(
+const generateOffer = () =>(
   TITLE.map((currentOffer) => ({
     id: uniqueRandomGenerator.generate(),
     title: currentOffer,
@@ -31,32 +28,18 @@ const generateOfferrrrrrrrrrr = () =>(
   }))
 );
 
-const allOfferssssssssssss = generateOfferrrrrrrrrrr(POINT__TYPE);
+const allOffer = generateOffer(POINT__TYPE);
 
+const generateAllOffers = (allType) => allType.map((currentType) => {
+  const count = Math.floor(Math.random() * (allOffer.length + 1));
+  const selectedOffers = allOffer.slice(0, count);
+  return {
+    type: currentType,
+    offers: selectedOffers
+  };
+});
 
-const generateAllOffers = (allType) => {
-  return allType.map((currentType) => {
-    const count = Math.floor(Math.random() * (allOfferssssssssssss.length + 1));
-    const selectedOfferssssss = allOfferssssssssssss.slice(0, count);
-    return {
-      type: currentType,
-      offers: selectedOfferssssss
-    };
-  });
-};
-
-
-
-
-// const generateAllOffers = (allType) =>(
-//   allType.map((currentType) => ({
-//     type: currentType,
-//     offers: selectedOfferssssss
-//   }))
-// );
-
-
-const allOffers = generateAllOffers (POINT__TYPE); //все оферсы с типами
+const allOffers = generateAllOffers (POINT__TYPE);
 
 function getCurrentOffers(type) {
   const currentOffer = allOffers.find((el) => el.type === type);
@@ -83,4 +66,3 @@ const getPoint = () => {
 };
 
 export {getPoint, allOffers, allDestinations, getCurrentOffers};
-

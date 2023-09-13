@@ -10,7 +10,6 @@ function createListEmptyTemplate() {
   </section>`
   );
 }
-
 export default class ListEmptyView extends AbstractView{
   get template() {
     return createListEmptyTemplate();

@@ -26,10 +26,10 @@ export default class ListSortView extends AbstractView{
     super();
     this.#handleSortTypeChange = onSortTypeChange;
 
-    this.element.addEventListener('click', this.#sortTypeChangeHandler);
+    this.element.addEventListener('click', this.#sortChangeHandler);
   }
 
-  #sortTypeChangeHandler = (evt) => {
+  #sortChangeHandler = (evt) => {
     if (evt.target.tagName !== 'LABEL') {
       return;
     }
