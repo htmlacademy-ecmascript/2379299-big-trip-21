@@ -3,7 +3,7 @@ import ListSortView from '../view/list-sort-view.js';
 import {render} from '../framework/render.js';
 import ListEmptyView from '../view/list-empty-view.js';
 import EventPresenter from './event-presenter.js';
-import {updateItem, sortDay, sortTime, sortPrice} from '../utils.js';
+import {sortDay, sortTime, sortPrice} from '../utils.js';
 import {SortType} from '../const';
 export default class MainPresenter {
   #container = null;
@@ -12,8 +12,8 @@ export default class MainPresenter {
   #listSort = null;
   #listEmpty = new ListEmptyView();
   #containerForEvent = new ListContainerForEvent();
-  #boardPoints = [];
   #allPoints = new Map();
+  #currentSortType = 'Day';
 
   constructor({container, pointModel}){
     this.#container = container;
@@ -21,25 +21,24 @@ export default class MainPresenter {
   }
 
   get points(){
+    switch (this.#currentSortType) {
+      case SortType.DAY:
+        return[...this.#pointModel.points].sort(sortDay);
+
+      case SortType.TIME:
+        return[...this.#pointModel.points].sort(sortTime);
+
+      case SortType.PRICE:
+        return[...this.#pointModel.points].sort(sortPrice);
+
+      default:
+    }
+
     return this.#pointModel.points;
   }
 
   #handleSortTypeChange = (sortType) => {
-    switch (sortType) {
-      case SortType.DAY:
-        this.#boardPoints.sort(sortDay);
-        break;
-
-      case SortType.TIME:
-        this.#boardPoints.sort(sortTime);
-        break;
-
-      case SortType.PRICE:
-        this.#boardPoints.sort(sortPrice);
-        break;
-
-      default:
-    }
+    this.#currentSortType = sortType;
     this.#clearPointList();
     this.#renderPointsList();
   };
@@ -56,25 +55,24 @@ export default class MainPresenter {
   }
 
   init(){
-    this.#boardPoints = [...this.#pointModel.points];
+
     this.#renderSort();
-    if (!this.#boardPoints.length){
+    if (!this.points,length){
       this.#renderEmpty();
       return;
     }
-    this.#boardPoints.sort(sortDay);
+
     this.#renderPointsList();
   }
 
   #handlePointChange = (updatePoint) => {
-    this.#boardPoints = updateItem(this.#boardPoints, updatePoint);
     this.#allPoints.get(updatePoint.id).init(updatePoint);
   };
 
   #renderPointsList(){
     render(this.#containerForEvent, this.#container);
-    for (let i = 0; i < this.#boardPoints.length; i++) {
-      this.#renderPoint(this.#boardPoints[i]);
+    for (let i = 0; i < this.points.length; i++) {
+      this.#renderPoint(this.points[i]);
     }
   }
 

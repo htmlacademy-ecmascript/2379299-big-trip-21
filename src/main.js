@@ -11,4 +11,3 @@ const mainPresenter = new MainPresenter({container:siteEventContainer, pointMode
 
 headPresenter.init();
 mainPresenter.init();
-
