@@ -20,6 +20,10 @@ export default class MainPresenter {
     this.#pointModel = pointModel;
   }
 
+  get points(){
+    return this.#pointModel.points;
+  }
+
   #handleSortTypeChange = (sortType) => {
     switch (sortType) {
       case SortType.DAY:
