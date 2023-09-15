@@ -182,7 +182,7 @@ export default class ListFormView extends AbstractStatefulView{
 
   #formSubmitHandle = (evt) => {
     evt.preventDefault();
-    this.#handleOnFormSubmit(ListFormView.parseStateToTask(this._state));
+    this.#handleOnFormSubmit(ListFormView.parseStateToTask(this._state));// отправляет колбэк в event presenter с обновленными данными
 
   };
 

@@ -1,6 +1,7 @@
 import EventItemView from '../view/event-item-view';
 import ListFormView from '../view/event-item-form-view.js';
 import {render, replace, remove} from '../framework/render.js';
+import {UserAction, UpdateType} from '../const';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -75,9 +76,21 @@ export default class EventPresenter {
     this.#replacePointToForm();
   };
 
-  #handleOnFormSubmit = (point) => {
-    this.#replaceFormToPoint();
-    this.#hendlePointChange(point);
+  #handleOnFormSubmit = (point) => { // приходит  колбэк с event view с обновленными данными
+    this.#replaceFormToPoint(); // закрывает форму
+    this.#hendlePointChange( //(в main presenter) раньше искал по id во всех точках и заменял, сейчас this.#handleViewAction
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point
+    );
+  };
+
+  #handleFavoriteClick = () => {
+    this.#hendlePointChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      {...this.#point, isFavorite: !this.#point.isFavorite}
+    );
   };
 
   #replacePointToForm(){
@@ -98,9 +111,5 @@ export default class EventPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
     this.#mode = Mode.DEFAULT;
   }
-
-  #handleFavoriteClick = () => {
-    this.#hendlePointChange({...this.#point, isFavorite: !this.#point.isFavorite});
-  };
 }
 

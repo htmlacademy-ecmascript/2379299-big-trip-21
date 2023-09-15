@@ -65,10 +65,6 @@ function convertToCustomFormat(isoDate, format = 'DD/MM/YYYY HH:mm') {
   return formattedDate;
 }
 
-function updateItem(items, update) {
-  return items.map((item) => item.id === update.id ? update : item);
-}
-
 function getWeightForNullDate(dateA, dateB) {
   if (!dateA && !dateB) {
     return 0;
@@ -100,5 +96,5 @@ function sortTime(pointA, pointB) {
 function sortPrice(pointA, pointB) {
   return pointB.price - pointA.price;
 }
-export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat, convertToCustomFormat, updateItem, sortDay, sortTime, sortPrice, getRandomElement};
+export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat, convertToCustomFormat, sortDay, sortTime, sortPrice, getRandomElement};
 

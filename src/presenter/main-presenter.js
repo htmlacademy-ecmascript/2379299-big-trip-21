@@ -4,7 +4,7 @@ import {render} from '../framework/render.js';
 import ListEmptyView from '../view/list-empty-view.js';
 import EventPresenter from './event-presenter.js';
 import {sortDay, sortTime, sortPrice} from '../utils.js';
-import {SortType} from '../const';
+import {SortType,UserAction, UpdateType} from '../const';
 export default class MainPresenter {
   #container = null;
   #pointModel = null;
@@ -18,6 +18,8 @@ export default class MainPresenter {
   constructor({container, pointModel}){
     this.#container = container;
     this.#pointModel = pointModel;
+
+    this.#pointModel.addObserver(this.#handleModelEvent); //добавляем в pointModel функцию колбэк #handleModelEvent что бы при наступлении события произошло обновление
   }
 
   get points(){
@@ -65,8 +67,34 @@ export default class MainPresenter {
     this.#renderPointsList();
   }
 
-  #handlePointChange = (updatePoint) => {
-    this.#allPoints.get(updatePoint.id).init(updatePoint);
+
+  #handleViewAction = (actionType, updateType, update) => { //раньше искал по id во всех точках и заменял , сейчас this.#hendlePointChange в event presenter
+    switch (actionType) {
+      case UserAction.UPDATE_TASK:
+        this.#pointModel.updateTask(updateType, update);
+        break;
+      case UserAction.ADD_TASK:
+        this.#pointModel.addTask(updateType, update);
+        break;
+      case UserAction.DELETE_TASK:
+        this.#pointModel.deleteTask(updateType, update);
+        break;
+    }
+  };
+
+  #handleModelEvent = (updateType, data) => {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        // - обновить часть списка (например, когда поменялось описание)
+        this.#allPoints.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        // - обновить список (например, когда задача ушла в архив)
+        break;
+      case UpdateType.MAJOR:
+        // - обновить всю доску (например, при переключении фильтра)
+        break;
+    }
   };
 
   #renderPointsList(){
@@ -79,7 +107,7 @@ export default class MainPresenter {
   #renderPoint(point){
     const pointPresentor = new EventPresenter({
       containerForEvent: this.#containerForEvent.element,
-      onPointChange: this.#handlePointChange,
+      onPointChange: this.#handleViewAction,
       onModeChange: this.#hendleModeChange
     });
 
