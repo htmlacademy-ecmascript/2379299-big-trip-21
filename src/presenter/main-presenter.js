@@ -70,14 +70,14 @@ export default class MainPresenter {
 
   #handleViewAction = (actionType, updateType, update) => { //раньше искал по id во всех точках и заменял , сейчас this.#hendlePointChange в event presenter
     switch (actionType) {
-      case UserAction.UPDATE_TASK:
-        this.#pointModel.updateTask(updateType, update);
+      case UserAction.UPDATE_POINT:
+        this.#pointModel.updatePoint(updateType, update);
         break;
-      case UserAction.ADD_TASK:
-        this.#pointModel.addTask(updateType, update);
+      case UserAction.ADD_POINT:
+        this.#pointModel.addPoint(updateType, update);
         break;
-      case UserAction.DELETE_TASK:
-        this.#pointModel.deleteTask(updateType, update);
+      case UserAction.DELETE_POINT:
+        this.#pointModel.deletePoint(updateType, update);
         break;
     }
   };
@@ -89,7 +89,9 @@ export default class MainPresenter {
         this.#allPoints.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        // - обновить список (например, когда задача ушла в архив)
+        this.#clearPointList();
+        this.#renderPointsList();
+
         break;
       case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
