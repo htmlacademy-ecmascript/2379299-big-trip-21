@@ -96,5 +96,10 @@ function sortTime(pointA, pointB) {
 function sortPrice(pointA, pointB) {
   return pointB.price - pointA.price;
 }
-export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat, convertToCustomFormat, sortDay, sortTime, sortPrice, getRandomElement};
+
+function isDatesEqual(dateA, dateB) {
+  return (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB);
+}
+
+export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat, convertToCustomFormat, sortDay, sortTime, sortPrice, getRandomElement, isDatesEqual};
 

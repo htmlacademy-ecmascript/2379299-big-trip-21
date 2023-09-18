@@ -157,12 +157,14 @@ export default class ListFormView extends AbstractStatefulView{
   #handleOnClick = null;
   #datepickerFrom = null;
   #datepickerTo = null;
+  #handleOnClickDelete = null;
 
-  constructor({point = DEFAULT__POINT, onClickButton, onFormSubmit}){
+  constructor({point = DEFAULT__POINT, onClickButton, onFormSubmit, onClickDelete}){
     super();
     this._setState(ListFormView.parseTaskToState(point));
     this.#handleOnFormSubmit = onFormSubmit;
     this.#handleOnClick = onClickButton;
+    this.#handleOnClickDelete = onClickDelete;
 
     this._restoreHandlers();
   }
@@ -178,6 +180,7 @@ export default class ListFormView extends AbstractStatefulView{
     this.element.querySelector('.event__type-wrapper').addEventListener('click', this.#typePointChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('input', this.#destinationChangeHandler);
     this.#setDatepicker();
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#ClickDeleteHandler);
   };
 
   #formSubmitHandle = (evt) => {
@@ -288,5 +291,11 @@ export default class ListFormView extends AbstractStatefulView{
     });
     this.#datepickerFrom.set('maxDate', this._state.dateTo);
   };
+
+  #ClickDeleteHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleOnClickDelete(ListFormView.parseStateToTask(this._state));
+  };
+
 }
 
