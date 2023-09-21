@@ -1,18 +1,10 @@
-const FILTER = [
-  'Everything',
-  'Future',
-  'Present',
-  'Past',
-  'Accept filter',
-];
+const FilterType = {
+  EVERYTHING: 'Everything',
+  FUTURE: 'Future',
+  PRESENT: 'Present',
+  PAST: 'Past'
+};
 
-const SORT = [
-  'Day',
-  'Event',
-  'Time',
-  'Price',
-  'Offers',
-];
 
 const SortType = {
   DAY: 'Day',
@@ -48,15 +40,15 @@ const DESTINATION = [
 ];
 
 const DATES_FROM = [
-  '2019-07-10T08:15:23.456Z',
+  '2024-07-10T08:15:23.456Z',
   '2019-07-12T14:34:12.123Z',
-  '2019-07-15T17:55:00.000Z',
+  '2024-07-15T17:55:00.000Z',
   '2019-07-18T22:23:45.678Z',
-  '2019-07-22T09:10:56.789Z',
+  '2024-07-22T09:10:56.789Z',
   '2019-07-24T02:55:23.123Z',
   '2019-07-28T12:34:56.789Z',
   '2019-07-30T18:45:34.123Z',
-  '2019-08-02T20:15:45.678Z',
+  '2024-08-02T20:15:45.678Z',
   '2019-08-05T21:25:56.789Z'
 ];
 
@@ -119,4 +111,4 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
-export {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS, FILTER, SORT, SortType, TITLE, DATES_FROM, DATES_TO, UserAction, UpdateType};
+export {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS, FilterType, SortType, TITLE, DATES_FROM, DATES_TO, UserAction, UpdateType};

@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {FilterType} from './const';
 
 const DATE_MONTH_FORMAT = 'D MMMM';
 const TIME_FORMAT = 'HH:mm';
@@ -101,5 +102,19 @@ function isDatesEqual(dateA, dateB) {
   return (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB);
 }
 
-export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat, convertToCustomFormat, sortDay, sortTime, sortPrice, getRandomElement, isDatesEqual};
+function filter(filterType, pointModel) {
+  const currentDate = (new Date());
+  switch (filterType) {
+    case FilterType.FUTURE:
+      return pointModel.points.filter((point) => (new Date(point.dateFrom)) > currentDate);
+    case FilterType.PRESENT:
+      return pointModel.points.filter((point) => currentDate === new Date(point.dateFrom));
+    case FilterType.PAST:
+      return pointModel.points.filter((point)=> new Date(point.dateFrom) < currentDate);
+    case FilterType.EVERYTHING:
+    default:
+      return pointModel.points;
+  }
+}
+export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat, convertToCustomFormat, sortDay, sortTime, sortPrice, getRandomElement, isDatesEqual, filter};
 
