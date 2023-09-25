@@ -1,6 +1,6 @@
 import ListContainerForEvent from '../view/container-for-event';
 import ListSortView from '../view/list-sort-view.js';
-import {render} from '../framework/render.js';
+import {render, remove} from '../framework/render.js';
 import ListEmptyView from '../view/list-empty-view.js';
 import EventPresenter from './event-presenter.js';
 import {sortDay, sortTime, sortPrice, filter} from '../utils.js';
@@ -9,10 +9,11 @@ export default class MainPresenter {
   #container = null;
   #pointModel = null;
   #filterModel = null;
-  #filteredArray = [];
+  #currentFilter = [];
+  #listEmpty = null;
 
   #listSort = null;
-  #listEmpty = new ListEmptyView();
+
   #containerForEvent = new ListContainerForEvent();
   #allPoints = new Map();
   #currentSortType = 'Day';
@@ -22,23 +23,24 @@ export default class MainPresenter {
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
 
-    this.#pointModel.addObserver(this.#handleModelEvent); //добавляем в pointModel функцию колбэк #handleModelEvent что бы при наступлении события произошло обновление
+
+    this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get points(){
-    this.#filteredArray = this.#filterModel.filter;
-    const filtredArrey = filter(this.#filteredArray, this.#pointModel);
+    this.#currentFilter = this.#filterModel.filter;
+    const filtredArray = filter(this.#currentFilter, this.#pointModel);
 
     switch (this.#currentSortType) {
       case SortType.DAY:
-        return[...filtredArrey].sort(sortDay);
+        return[...filtredArray].sort(sortDay);
 
       case SortType.TIME:
-        return[...filtredArrey].sort(sortTime);
+        return[...filtredArray].sort(sortTime);
 
       case SortType.PRICE:
-        return[...filtredArrey].sort(sortPrice);
+        return[...filtredArray].sort(sortPrice);
 
       default:
     }
@@ -60,13 +62,17 @@ export default class MainPresenter {
   }
 
   #renderEmpty(){
+    this.#listEmpty = new ListEmptyView({
+      filterType: this.#currentFilter
+    });
     render(this.#listEmpty, this.#container);
   }
 
   init(){
 
     this.#renderSort();
-    if (!this.points,length){
+
+    if (!this.points.length){
       this.#renderEmpty();
       return;
     }
@@ -99,12 +105,18 @@ export default class MainPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearPointList();
+
+        if (!this.points.length){
+          this.#renderEmpty();
+          return;
+        }
         this.#renderPointsList();
         break;
     }
   };
 
   #renderPointsList(){
+
     render(this.#containerForEvent, this.#container);
     for (let i = 0; i < this.points.length; i++) {
       this.#renderPoint(this.points[i]);
@@ -125,6 +137,9 @@ export default class MainPresenter {
   #clearPointList() {
     this.#allPoints.forEach((presenter) => presenter.destroy());
     this.#allPoints.clear();
+    if (this.#listEmpty){
+      remove (this.#listEmpty);
+    }
   }
 
   #hendleModeChange = () => {

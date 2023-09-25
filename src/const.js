@@ -5,7 +5,6 @@ const FilterType = {
   PAST: 'Past'
 };
 
-
 const SortType = {
   DAY: 'Day',
   EVENT: 'Event',

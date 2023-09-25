@@ -3,11 +3,9 @@ import ListFilterView from '../view/list-filter-view.js';
 import {render, RenderPosition} from '../framework/render.js';
 import {UpdateType} from '../const.js';
 
-
 export default class HeadPresenter {
   #siteHeadContainer = null;
   #filterModel = null;
-  #pointModel = null;
   #listInfo = new ListEventInfoView();
 
   #handleClickTypeFilter = (filterType) => {
@@ -19,10 +17,9 @@ export default class HeadPresenter {
 
   });
 
-  constructor({siteHeadContainer, filterModel, pointModel}){
+  constructor({siteHeadContainer, filterModel}){
     this.#siteHeadContainer = siteHeadContainer;
     this.#filterModel = filterModel;
-    this.#pointModel = pointModel;
   }
 
   init(){
