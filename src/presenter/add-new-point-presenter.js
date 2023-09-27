@@ -1,25 +1,25 @@
 import ListFormView from '../view/event-item-form-view.js';
 import {replace, render} from '../framework/render.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import {DEFAULT__POINT} from '../view/event-item-form-view.js'
+import {DEFAULT__POINT} from '../view/event-item-form-view.js';
+import {nanoid} from 'nanoid';
+import {UserAction, UpdateType} from '../const.js';
 
 class EmptiPoint extends AbstractStatefulView {
   get template() {
 
-    return `<li> empty </li>`;
+    return `<li>   </li>`;
   }
 }
-
-
 export default class AddNewPointPresenter {
   #containerForEvent = null;
   #newPointForm = null;
   #emptiPoint = null;
   #hendlePointChange = null;
 
-  constructor({containerForEvent}){
+  constructor({containerForEvent, onPointChange}){
     this.#containerForEvent = containerForEvent;
-    // this.#hendlePointChange = onModeChange
+    this.#hendlePointChange = onPointChange;
   }
 
   init(){
@@ -30,6 +30,7 @@ export default class AddNewPointPresenter {
       // onClickDelete: this.#handleOnClickDelete,
     });
 
+
     this.#emptiPoint = new EmptiPoint();
 
     render(this.#emptiPoint, this.#containerForEvent);
@@ -39,11 +40,11 @@ export default class AddNewPointPresenter {
 
   #handleOnFormSubmit = (point) => {
     this.#replaceFormToEmpty(); // закрывает форму
-    // this.#hendlePointChange(//(в main presenter) раньше искал по id во всех точках и заменял, сейчас this.#handleViewAction
-    //   UserAction.ADD_POINT,
-    //   UpdateType.MINOR,
-    //   point
-    // );
+    this.#hendlePointChange(//(в main presenter) раньше искал по id во всех точках и заменял, сейчас this.#handleViewAction
+      UserAction.ADD_POINT,
+      UpdateType.MINOR,
+      {id: nanoid(), ...point}
+    );
   };
 
   #handleOnOpenForm = () => {
@@ -51,7 +52,6 @@ export default class AddNewPointPresenter {
   };
 
   #replaceEmptyToForm(){
-    console.log('open form', this.#newPointForm.template);
     replace(this.#newPointForm, this.#emptiPoint);
   }
 

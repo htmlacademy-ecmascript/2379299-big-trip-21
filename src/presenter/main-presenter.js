@@ -75,7 +75,7 @@ export default class MainPresenter {
 
     this.#newPointForm = new AddNewPointPresenter({
       containerForEvent: this.#containerForEvent.element,
-      onModeChange: this.#hendleModeChange
+      onPointChange: this.#handleViewAction
     });
 
     this.#renderSort();

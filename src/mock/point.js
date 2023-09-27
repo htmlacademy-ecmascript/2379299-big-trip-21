@@ -39,7 +39,7 @@ const generateAllOffers = (allType) => allType.map((currentType) => {
   };
 });
 
-const allOffers = generateAllOffers (POINT__TYPE);
+const allOffers = generateAllOffers(POINT__TYPE);
 
 function getCurrentOffers(type) {
   const currentOffer = allOffers.find((el) => el.type === type);

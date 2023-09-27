@@ -16,7 +16,8 @@ const DEFAULT__POINT = {
   dateFrom: '2019-07-10T22:55:56.845Z',
   dateTo:  '2019-07-11T11:22:13.375Z',
   destination: null,
-  type: 'taxi'
+  type: 'Taxi',
+  offers: []
 };
 
 function createFormTemplate(point) {
@@ -25,14 +26,13 @@ function createFormTemplate(point) {
   const timeTo = convertToCustomFormat(dateTo);
   const typeKey = type.toLowerCase();
   let currentDestinationPictures = '';
-  if (id){
+  if (destination){
     currentDestinationPictures = destination.pictures.reduce((result, item) => {
       const {src, description} = item;
       result += `<img class="event__photo" src="${src}" alt="${description}">`;
       return result;
     }, '');
   }
-
 
   const HTMLGroup = POINT__TYPE.reduce((result, item) => {
     const itemKey = item.toLowerCase();
@@ -49,6 +49,7 @@ function createFormTemplate(point) {
   }, '');
 
   function createEventOffersGroup(allOffers){
+
     const offersGroup = getCurrentOffers(type).offers.reduce((result, offerItem) => {
       const isActive = allOffers.find((el) => el.id === offerItem.id) !== undefined;
 
@@ -68,11 +69,7 @@ function createFormTemplate(point) {
     return offersGroup;
   }
 
-  let offersGroupHTML = '';
-
-  if(id){
-    offersGroupHTML = createEventOffersGroup(offers);
-  }
+  const offersGroupHTML = createEventOffersGroup(offers);
 
   function openClouseEvent(idPoint){
     if (!idPoint){
@@ -143,8 +140,8 @@ function createFormTemplate(point) {
 
 
         <section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">${id ? destination.name : ''}</h3>
-          <p class="event__destination-description">${id ? destination.description : ''}</p>
+          <h3 class="event__section-title  event__section-title--destination">${destination ? destination.name : ''}</h3>
+          <p class="event__destination-description">${destination ? destination.description : ''}</p>
 
           <div class="event__photos-container">
             <div class="event__photos-tape">
@@ -157,7 +154,6 @@ function createFormTemplate(point) {
     </li>`
   );
 }
-
 export default class ListFormView extends AbstractStatefulView{
   #handleOnFormSubmit = null;
   #handleOnClick = null;
