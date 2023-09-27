@@ -2,6 +2,7 @@ import ListContainerForEvent from '../view/container-for-event';
 import ListSortView from '../view/list-sort-view.js';
 import {render, remove} from '../framework/render.js';
 import ListEmptyView from '../view/list-empty-view.js';
+import AddNewPointPresenter from './add-new-point-presenter.js';
 import EventPresenter from './event-presenter.js';
 import {sortDay, sortTime, sortPrice, filter} from '../utils.js';
 import {SortType,UserAction, UpdateType} from '../const';
@@ -11,6 +12,7 @@ export default class MainPresenter {
   #filterModel = null;
   #currentFilter = [];
   #listEmpty = null;
+  #newPointForm = null;
 
   #listSort = null;
 
@@ -68,7 +70,13 @@ export default class MainPresenter {
     render(this.#listEmpty, this.#container);
   }
 
+
   init(){
+
+    this.#newPointForm = new AddNewPointPresenter({
+      containerForEvent: this.#containerForEvent.element,
+      onModeChange: this.#hendleModeChange
+    });
 
     this.#renderSort();
 
@@ -78,6 +86,7 @@ export default class MainPresenter {
     }
 
     this.#renderPointsList();
+
   }
 
   #handleViewAction = (actionType, updateType, update) => { //раньше искал по id во всех точках и заменял , сейчас this.#hendlePointChange в event presenter
@@ -116,6 +125,8 @@ export default class MainPresenter {
   };
 
   #renderPointsList(){
+
+    this.#newPointForm.init();
 
     render(this.#containerForEvent, this.#container);
     for (let i = 0; i < this.points.length; i++) {

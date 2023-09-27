@@ -11,12 +11,11 @@ const Mode = {
 };
 
 const DEFAULT__POINT = {
-  price: 1100,
+  id: null,
+  price: 0,
   dateFrom: '2019-07-10T22:55:56.845Z',
   dateTo:  '2019-07-11T11:22:13.375Z',
-  destination: 11,
-  isFavorite: false,
-  offers: [1],
+  destination: null,
   type: 'taxi'
 };
 
@@ -25,12 +24,15 @@ function createFormTemplate(point) {
   const timeFrom = convertToCustomFormat(dateFrom);
   const timeTo = convertToCustomFormat(dateTo);
   const typeKey = type.toLowerCase();
+  let currentDestinationPictures = '';
+  if (id){
+    currentDestinationPictures = destination.pictures.reduce((result, item) => {
+      const {src, description} = item;
+      result += `<img class="event__photo" src="${src}" alt="${description}">`;
+      return result;
+    }, '');
+  }
 
-  const currentDestinationPictures = destination.pictures.reduce((result, item) => {
-    const {src, description} = item;
-    result += `<img class="event__photo" src="${src}" alt="${description}">`;
-    return result;
-  }, '');
 
   const HTMLGroup = POINT__TYPE.reduce((result, item) => {
     const itemKey = item.toLowerCase();
@@ -66,7 +68,11 @@ function createFormTemplate(point) {
     return offersGroup;
   }
 
-  const offersGroupHTML = createEventOffersGroup(offers);
+  let offersGroupHTML = '';
+
+  if(id){
+    offersGroupHTML = createEventOffersGroup(offers);
+  }
 
   function openClouseEvent(idPoint){
     if (!idPoint){
@@ -100,7 +106,7 @@ function createFormTemplate(point) {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${id ? destination.name : ''}" list="destination-list-1">
             <datalist id="destination-list-1">
             ${destinationGroupHTML}
             </datalist>
@@ -137,8 +143,8 @@ function createFormTemplate(point) {
 
 
         <section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">${destination.name}</h3>
-          <p class="event__destination-description">${destination.description}</p>
+          <h3 class="event__section-title  event__section-title--destination">${id ? destination.name : ''}</h3>
+          <p class="event__destination-description">${id ? destination.description : ''}</p>
 
           <div class="event__photos-container">
             <div class="event__photos-tape">
@@ -185,7 +191,7 @@ export default class ListFormView extends AbstractStatefulView{
 
   #formSubmitHandle = (evt) => {
     evt.preventDefault();
-    this.#handleOnFormSubmit(ListFormView.parseStateToTask(this._state));// отправляет колбэк в event presenter с обновленными данными
+    this.#handleOnFormSubmit(ListFormView.parseStateToTask(this._state));
 
   };
 
@@ -299,3 +305,4 @@ export default class ListFormView extends AbstractStatefulView{
 
 }
 
+export {DEFAULT__POINT};
