@@ -1,6 +1,8 @@
 import EventItemView from '../view/event-item-view';
 import ListFormView from '../view/event-item-form-view.js';
 import {render, replace, remove} from '../framework/render.js';
+import {UserAction, UpdateType} from '../const';
+import {isDatesEqual, convertToCustomFormat} from '../utils.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -37,7 +39,8 @@ export default class EventPresenter {
     this.#pointForm = new ListFormView({
       point: this.#point,
       onFormSubmit: this.#handleOnFormSubmit,
-      onClickButton: this.resetView.bind(this)
+      onClickButton: this.resetView.bind(this),
+      onClickDelete: this.#handleOnClickDelete,
     });
 
     if (!prevPointItem || !prevPointForm){
@@ -76,8 +79,21 @@ export default class EventPresenter {
   };
 
   #handleOnFormSubmit = (point) => {
-    this.#replaceFormToPoint();
-    this.#hendlePointChange(point);
+    const isMinorUpdate = !isDatesEqual(convertToCustomFormat(this.#point.dateFrom), convertToCustomFormat(point.dateFrom) || (convertToCustomFormat(this.#point.dateTo), convertToCustomFormat(point.dateTo))) || this.#point.price !== point.price;
+    this.#replaceFormToPoint(); // закрывает форму
+    this.#hendlePointChange( //(в main presenter) раньше искал по id во всех точках и заменял, сейчас this.#handleViewAction
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      point
+    );
+  };
+
+  #handleFavoriteClick = () => {
+    this.#hendlePointChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      {...this.#point, isFavorite: !this.#point.isFavorite}
+    );
   };
 
   #replacePointToForm(){
@@ -99,8 +115,13 @@ export default class EventPresenter {
     this.#mode = Mode.DEFAULT;
   }
 
-  #handleFavoriteClick = () => {
-    this.#hendlePointChange({...this.#point, isFavorite: !this.#point.isFavorite});
+  #handleOnClickDelete = () => {
+    this.#hendlePointChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      this.#point
+    );
   };
 }
+
 

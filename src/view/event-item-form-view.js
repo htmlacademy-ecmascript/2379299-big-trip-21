@@ -4,6 +4,7 @@ import {convertToCustomFormat} from '../utils.js';
 import {allDestinations, getCurrentOffers} from '../mock/point.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import he from 'he';
 
 const Mode = {
   CREATE: 'Cancel',
@@ -11,13 +12,13 @@ const Mode = {
 };
 
 const DEFAULT__POINT = {
-  price: 1100,
+  id: null,
+  price: 0,
   dateFrom: '2019-07-10T22:55:56.845Z',
   dateTo:  '2019-07-11T11:22:13.375Z',
-  destination: 11,
-  isFavorite: false,
-  offers: [1],
-  type: 'taxi'
+  destination: null,
+  type: 'Taxi',
+  offers: []
 };
 
 function createFormTemplate(point) {
@@ -25,12 +26,14 @@ function createFormTemplate(point) {
   const timeFrom = convertToCustomFormat(dateFrom);
   const timeTo = convertToCustomFormat(dateTo);
   const typeKey = type.toLowerCase();
-
-  const currentDestinationPictures = destination.pictures.reduce((result, item) => {
-    const {src, description} = item;
-    result += `<img class="event__photo" src="${src}" alt="${description}">`;
-    return result;
-  }, '');
+  let currentDestinationPictures = '';
+  if (destination){
+    currentDestinationPictures = destination.pictures.reduce((result, item) => {
+      const {src, description} = item;
+      result += `<img class="event__photo" src="${src}" alt="${description}">`;
+      return result;
+    }, '');
+  }
 
   const HTMLGroup = POINT__TYPE.reduce((result, item) => {
     const itemKey = item.toLowerCase();
@@ -47,6 +50,7 @@ function createFormTemplate(point) {
   }, '');
 
   function createEventOffersGroup(allOffers){
+
     const offersGroup = getCurrentOffers(type).offers.reduce((result, offerItem) => {
       const isActive = allOffers.find((el) => el.id === offerItem.id) !== undefined;
 
@@ -100,7 +104,7 @@ function createFormTemplate(point) {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${id ? destination.name : ''}" list="destination-list-1">
             <datalist id="destination-list-1">
             ${destinationGroupHTML}
             </datalist>
@@ -119,7 +123,7 @@ function createFormTemplate(point) {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(String(price))} ">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -137,8 +141,8 @@ function createFormTemplate(point) {
 
 
         <section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">${destination.name}</h3>
-          <p class="event__destination-description">${destination.description}</p>
+          <h3 class="event__section-title  event__section-title--destination">${destination ? destination.name : ''}</h3>
+          <p class="event__destination-description">${destination ? destination.description : ''}</p>
 
           <div class="event__photos-container">
             <div class="event__photos-tape">
@@ -151,18 +155,19 @@ function createFormTemplate(point) {
     </li>`
   );
 }
-
 export default class ListFormView extends AbstractStatefulView{
   #handleOnFormSubmit = null;
   #handleOnClick = null;
   #datepickerFrom = null;
   #datepickerTo = null;
+  #handleOnClickDelete = null;
 
-  constructor({point = DEFAULT__POINT, onClickButton, onFormSubmit}){
+  constructor({point = DEFAULT__POINT, onClickButton, onFormSubmit, onClickDelete}){
     super();
     this._setState(ListFormView.parseTaskToState(point));
     this.#handleOnFormSubmit = onFormSubmit;
     this.#handleOnClick = onClickButton;
+    this.#handleOnClickDelete = onClickDelete;
 
     this._restoreHandlers();
   }
@@ -178,6 +183,7 @@ export default class ListFormView extends AbstractStatefulView{
     this.element.querySelector('.event__type-wrapper').addEventListener('click', this.#typePointChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('input', this.#destinationChangeHandler);
     this.#setDatepicker();
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#ClickDeleteHandler);
   };
 
   #formSubmitHandle = (evt) => {
@@ -288,5 +294,12 @@ export default class ListFormView extends AbstractStatefulView{
     });
     this.#datepickerFrom.set('maxDate', this._state.dateTo);
   };
+
+  #ClickDeleteHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleOnClickDelete(ListFormView.parseStateToTask(this._state));
+  };
+
 }
 
+export {DEFAULT__POINT};

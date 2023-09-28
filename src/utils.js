@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {FilterType} from './const';
 
 const DATE_MONTH_FORMAT = 'D MMMM';
 const TIME_FORMAT = 'HH:mm';
@@ -65,10 +66,6 @@ function convertToCustomFormat(isoDate, format = 'DD/MM/YYYY HH:mm') {
   return formattedDate;
 }
 
-function updateItem(items, update) {
-  return items.map((item) => item.id === update.id ? update : item);
-}
-
 function getWeightForNullDate(dateA, dateB) {
   if (!dateA && !dateB) {
     return 0;
@@ -100,5 +97,24 @@ function sortTime(pointA, pointB) {
 function sortPrice(pointA, pointB) {
   return pointB.price - pointA.price;
 }
-export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat, convertToCustomFormat, updateItem, sortDay, sortTime, sortPrice, getRandomElement};
+
+function isDatesEqual(dateA, dateB) {
+  return (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB);
+}
+
+function filter(filterType, pointModel) {
+  const currentDate = (new Date());
+  switch (filterType) {
+    case FilterType.FUTURE:
+      return pointModel.points.filter((point) => (new Date(point.dateFrom)) > currentDate);
+    case FilterType.PRESENT:
+      return pointModel.points.filter((point) => currentDate === new Date(point.dateFrom));
+    case FilterType.PAST:
+      return pointModel.points.filter((point)=> new Date(point.dateFrom) < currentDate);
+    case FilterType.EVERYTHING:
+    default:
+      return pointModel.points;
+  }
+}
+export{getRandomElementFromArray, formatDateMonth, formatTime, getDurationInMinutes, padZero, convertMinutesToHoursFormat, convertToCustomFormat, sortDay, sortTime, sortPrice, getRandomElement, isDatesEqual, filter};
 
