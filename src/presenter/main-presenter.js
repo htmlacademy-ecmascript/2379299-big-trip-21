@@ -105,6 +105,11 @@ export default class MainPresenter {
         this.#clearPointList();
         this.#renderPointsList();
         break;
+      case UpdateType.INIT:
+        // this.#isLoading = false;
+        // remove(this.#loadingComponent);
+        this.#renderPointsList();
+        break;
     }
   };
 

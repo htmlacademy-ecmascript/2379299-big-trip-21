@@ -1,7 +1,6 @@
 import { POINT__TYPE, DESTINATION } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {convertToCustomFormat} from '../utils.js';
-import {allDestinations, getCurrentOffers} from '../mock/point.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
@@ -240,7 +239,7 @@ export default class ListFormView extends AbstractStatefulView{
   #offerChangeHandler = () => {
     const checkedOffers = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
     const curentOffers = checkedOffers.map((item) => item.dataset.offer);
-    const yyy = 
+    const yyy =
     this._setState({
       point: {
         ...this._state.point,
