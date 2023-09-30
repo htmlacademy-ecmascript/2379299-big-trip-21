@@ -4,6 +4,20 @@ import Observable from '../framework/observable.js';
 const POINT_COUNT = 7;
 export default class PointModel extends Observable {
   #points = Array.from({length: POINT_COUNT }, getPoint);
+  #pointApiService = null;
+
+  constructor({pointApiService}){
+    super();
+    this.#pointApiService = pointApiService;
+
+    this.#pointApiService.points.then((points) =>{
+      console.log(points);
+
+
+    });
+
+
+  }
 
   get points(){
     return this.#points;
