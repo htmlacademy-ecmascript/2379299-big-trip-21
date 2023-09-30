@@ -7,7 +7,6 @@ import {UserAction, UpdateType} from '../const.js';
 
 class EmptiPoint extends AbstractStatefulView {
   get template() {
-
     return `<li>   </li>`;
   }
 }
@@ -16,8 +15,6 @@ export default class AddNewPointPresenter {
   #newPointForm = null;
   #emptiPoint = null;
   #hendlePointChange = null;
-
-
 
   constructor({containerForEvent, onPointChange}){
     this.#containerForEvent = containerForEvent;
@@ -28,7 +25,6 @@ export default class AddNewPointPresenter {
 
     this.#newPointForm = new ListFormView({
       onFormSubmit: this.#handleOnFormSubmit,
-      // onClickButton: this.resetView.bind(this),
       onClickDelete: this.#handleOnClickDelete,
     });
 
@@ -41,12 +37,11 @@ export default class AddNewPointPresenter {
   }
 
   #handleOnFormSubmit = (point) => {
-    delete point.id;
     this.#replaceFormToEmpty(); // закрывает форму
     this.#hendlePointChange(//(в main presenter) раньше искал по id во всех точках и заменял, сейчас this.#handleViewAction
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      {id: nanoid(), ...point}
+      {...point, id: nanoid()}
     );
   };
 

@@ -23,6 +23,7 @@ const DEFAULT__POINT = {
 
 function createFormTemplate(point) {
   const{destination, type, dateFrom, dateTo, price, offers, id} = point;
+  console.log(34343,offers )
   const timeFrom = convertToCustomFormat(dateFrom);
   const timeTo = convertToCustomFormat(dateTo);
   const typeKey = type.toLowerCase();
@@ -53,10 +54,9 @@ function createFormTemplate(point) {
 
     const offersGroup = getCurrentOffers(type).offers.reduce((result, offerItem) => {
       const isActive = allOffers.find((el) => el.id === offerItem.id) !== undefined;
-
       const titleKey = offerItem.title.toLowerCase();
       result += `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${titleKey}-1" type="checkbox" name="event-offer-${titleKey}" ${(isActive) ? 'checked' : ''}>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${titleKey}-1" type="checkbox" data-offer="${offerItem.id}" name="event-offer-${titleKey}" ${(isActive) ? 'checked' : ''}>
       <label class="event__offer-label" for="event-offer-${titleKey}-1">
         <span class="event__offer-title">${offerItem.title}class</span>
         &plus;&euro;&nbsp;
@@ -184,6 +184,7 @@ export default class ListFormView extends AbstractStatefulView{
     this.element.querySelector('.event__input--destination').addEventListener('input', this.#destinationChangeHandler);
     this.#setDatepicker();
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#ClickDeleteHandler);
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler);
   };
 
   #formSubmitHandle = (evt) => {
@@ -234,6 +235,20 @@ export default class ListFormView extends AbstractStatefulView{
     };
     this.updateElement(updatedState);
 
+  };
+
+  #offerChangeHandler = () => {
+    const checkedOffers = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
+    const curentOffers = checkedOffers.map((item) => item.dataset.offer);
+    const yyy = 
+    this._setState({
+      point: {
+        ...this._state.point,
+        offers: checkedOffers.map((item) => item.dataset.offer)
+      }
+
+    });
+console.log(666666666666,curentOffers)
   };
 
   removeElement() {

@@ -77,16 +77,8 @@ export default class MainPresenter {
       containerForEvent: this.#containerForEvent.element,
       onPointChange: this.#handleViewAction
     });
-
     this.#renderSort();
-
-    if (!this.points.length){
-      this.#renderEmpty();
-      return;
-    }
-
     this.#renderPointsList();
-
   }
 
   #handleViewAction = (actionType, updateType, update) => { //раньше искал по id во всех точках и заменял , сейчас this.#hendlePointChange в event presenter
@@ -109,16 +101,8 @@ export default class MainPresenter {
         this.#allPoints.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        this.#clearPointList();
-        this.#renderPointsList();
-        break;
       case UpdateType.MAJOR:
         this.#clearPointList();
-
-        if (!this.points.length){
-          this.#renderEmpty();
-          return;
-        }
         this.#renderPointsList();
         break;
     }
@@ -128,6 +112,10 @@ export default class MainPresenter {
 
     this.#newPointForm.init();
 
+    if (!this.points.length){
+      this.#renderEmpty();
+      return;
+    }
     render(this.#containerForEvent, this.#container);
     for (let i = 0; i < this.points.length; i++) {
       this.#renderPoint(this.points[i]);
