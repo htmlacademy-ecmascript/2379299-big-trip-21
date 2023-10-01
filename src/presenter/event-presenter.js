@@ -13,16 +13,24 @@ export default class EventPresenter {
   #point = null;
   #mode = Mode.DEFAULT;
 
+  #offers = [];
+  #destinations = [];
+
   #pointItem = null;
   #pointForm = null;
 
   #hendlePointChange = null;
   #hendleModeChange = null;
 
-  constructor({containerForEvent, onPointChange, onModeChange}){
+  constructor({
+    containerForEvent, onPointChange, onModeChange,
+    offers, destinations
+  }){
     this.#containerForEvent = containerForEvent;
     this.#hendlePointChange = onPointChange;
     this.#hendleModeChange = onModeChange;
+    this.#offers = offers;
+    this.#destinations = destinations;
   }
 
   init(point){
@@ -41,16 +49,16 @@ export default class EventPresenter {
       onFormSubmit: this.#handleOnFormSubmit,
       onClickButton: this.resetView.bind(this),
       onClickDelete: this.#handleOnClickDelete,
+      offers: this.#offers,
+      destinations: this.#destinations,
     });
 
     if (!prevPointItem || !prevPointForm){
-
       render(this.#pointItem, this.#containerForEvent);
       return;
     }
 
     if (this.#mode === Mode.DEFAULT) {
-
       replace(this.#pointItem, prevPointItem);
     }
 

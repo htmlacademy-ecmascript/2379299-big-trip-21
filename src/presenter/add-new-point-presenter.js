@@ -5,39 +5,46 @@ import {DEFAULT__POINT} from '../view/event-item-form-view.js';
 import {nanoid} from 'nanoid';
 import {UserAction, UpdateType} from '../const.js';
 
-class EmptiPoint extends AbstractStatefulView {
+class EmptyPoint extends AbstractStatefulView {
   get template() {
-    return `<li>   </li>`;
+    return '<li></li>';
   }
 }
 export default class AddNewPointPresenter {
   #containerForEvent = null;
   #newPointForm = null;
-  #emptiPoint = null;
+  #emptyPoint = null;
   #hendlePointChange = null;
+  #formOpened = false;
+  #offers = [];
+  #destinations = [];
 
   constructor({containerForEvent, onPointChange}){
     this.#containerForEvent = containerForEvent;
     this.#hendlePointChange = onPointChange;
   }
 
-  init(){
+  init({offers, destinations}){
+    this.#offers = offers;
+    this.#destinations = destinations;
 
     this.#newPointForm = new ListFormView({
       onFormSubmit: this.#handleOnFormSubmit,
-      onClickDelete: this.#handleOnClickDelete,
+      onClickDelete: this.#handleOnClickClose,
+      onClickButton: this.#handleOnClickClose,
+      offers: offers, destinations: destinations
     });
+    this.#emptyPoint = new EmptyPoint();
 
-
-    this.#emptiPoint = new EmptiPoint();
-
-    render(this.#emptiPoint, this.#containerForEvent);
+    render(this.#emptyPoint, this.#containerForEvent);
+    // перенести в Subscribe
     document.querySelector('.trip-main__event-add-btn').addEventListener('click', this.#handleOnOpenForm);
-
   }
 
   #handleOnFormSubmit = (point) => {
+    this.#formOpened = false;
     this.#replaceFormToEmpty(); // закрывает форму
+    // тут надо сделать запрос на апи и результат положить в hendlePointChange
     this.#hendlePointChange(//(в main presenter) раньше искал по id во всех точках и заменял, сейчас this.#handleViewAction
       UserAction.ADD_POINT,
       UpdateType.MINOR,
@@ -46,23 +53,22 @@ export default class AddNewPointPresenter {
   };
 
   #handleOnOpenForm = () => {
-    this.#replaceEmptyToForm();
+    if (this.#formOpened === false){
+      this.#replaceEmptyToForm();
+      this.#formOpened = true;
+    }
   };
 
   #replaceEmptyToForm(){
-    replace(this.#newPointForm, this.#emptiPoint);
+    replace(this.#newPointForm, this.#emptyPoint);
   }
 
   #replaceFormToEmpty(){
-    replace(this.#emptiPoint, this.#newPointForm);
+    replace(this.#emptyPoint, this.#newPointForm);
   }
 
-  #handleOnClickDelete = () => {
-    this.#hendlePointChange(
-      UserAction.DELETE_POINT,
-      UpdateType.MINOR,
-      DEFAULT__POINT
-
-    );
+  #handleOnClickClose = () => {
+    this.#formOpened = false;
+    this.#replaceFormToEmpty();
   };
 }

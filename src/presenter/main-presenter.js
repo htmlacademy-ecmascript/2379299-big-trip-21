@@ -1,11 +1,12 @@
 import ListContainerForEvent from '../view/container-for-event';
 import ListSortView from '../view/list-sort-view.js';
-import {render, remove} from '../framework/render.js';
+import {render, remove, RenderPosition} from '../framework/render.js';
 import ListEmptyView from '../view/list-empty-view.js';
 import AddNewPointPresenter from './add-new-point-presenter.js';
 import EventPresenter from './event-presenter.js';
 import {sortDay, sortTime, sortPrice, filter} from '../utils.js';
 import {SortType,UserAction, UpdateType} from '../const';
+import LoadingView from '../view/loading-view.js';
 export default class MainPresenter {
   #container = null;
   #pointModel = null;
@@ -15,19 +16,23 @@ export default class MainPresenter {
   #newPointForm = null;
 
   #listSort = null;
-
+  #loadingComponent = new LoadingView();
   #containerForEvent = new ListContainerForEvent();
   #allPoints = new Map();
   #currentSortType = 'Day';
-
+  #isLoading = true;
   constructor({container, pointModel, filterModel}){
     this.#container = container;
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
 
-
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+
+    this.#newPointForm = new AddNewPointPresenter({
+      containerForEvent: this.#containerForEvent.element,
+      onPointChange: this.#handleViewAction
+    });
   }
 
   get points(){
@@ -70,13 +75,7 @@ export default class MainPresenter {
     render(this.#listEmpty, this.#container);
   }
 
-
   init(){
-
-    this.#newPointForm = new AddNewPointPresenter({
-      containerForEvent: this.#containerForEvent.element,
-      onPointChange: this.#handleViewAction
-    });
     this.#renderSort();
     this.#renderPointsList();
   }
@@ -106,32 +105,54 @@ export default class MainPresenter {
         this.#renderPointsList();
         break;
       case UpdateType.INIT:
-        // this.#isLoading = false;
-        // remove(this.#loadingComponent);
+        this.#isLoading = false;
+        this.#clearLoading();
+        this.#clearPointList();
+        this.#renderNewForm();
         this.#renderPointsList();
         break;
     }
   };
 
-  #renderPointsList(){
+  #renderLoading() {
+    render(this.#loadingComponent, this.#container);
+  }
 
-    this.#newPointForm.init();
+  #clearLoading() {
+    remove(this.#loadingComponent);
+  }
+
+  #renderPointsList(){
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
 
     if (!this.points.length){
       this.#renderEmpty();
       return;
     }
+
     render(this.#containerForEvent, this.#container);
     for (let i = 0; i < this.points.length; i++) {
       this.#renderPoint(this.points[i]);
     }
   }
 
+  #renderNewForm() {
+    this.#newPointForm.init({
+      offers: this.#pointModel.offers,
+      destinations: this.#pointModel.destinations
+    });
+  }
+
   #renderPoint(point){
     const pointPresentor = new EventPresenter({
       containerForEvent: this.#containerForEvent.element,
       onPointChange: this.#handleViewAction,
-      onModeChange: this.#hendleModeChange
+      onModeChange: this.#hendleModeChange,
+      offers: this.#pointModel.offers,
+      destinations: this.#pointModel.destinations
     });
 
     pointPresentor.init(point);
@@ -142,7 +163,7 @@ export default class MainPresenter {
     this.#allPoints.forEach((presenter) => presenter.destroy());
     this.#allPoints.clear();
     if (this.#listEmpty){
-      remove (this.#listEmpty);
+      remove(this.#listEmpty);
     }
   }
 
@@ -150,4 +171,3 @@ export default class MainPresenter {
     this.#allPoints.forEach((presenter) => presenter.resetView());
   };
 }
-

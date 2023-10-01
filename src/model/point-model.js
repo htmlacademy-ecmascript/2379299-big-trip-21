@@ -2,30 +2,38 @@ import Observable from '../framework/observable.js';
 import {UpdateType} from '../const.js';
 
 export default class PointModel extends Observable {
+  #offers = [];
+  #destinations = [];
   #points = [];
   #pointsApiService = null;
+  #offersApiService = null;
+  #destinationsApiService = null;
 
-  constructor({pointsApiService}){
+  constructor({pointsApiService, offersApiService, destinationsApiService}){
     super();
     this.#pointsApiService = pointsApiService;
-
-    // this.#pointApiService.points.then((points) =>{
-    //   console.log(points.map(this.#adaptToClient));
-    // });
-
-
+    this.#offersApiService = offersApiService;
+    this.#destinationsApiService = destinationsApiService;
   }
 
   get points(){
     return this.#points;
   }
 
+  get offers() {
+    return this.#offers;
+  }
+
+  get destinations() {
+    return this.#destinations;
+  }
+
   async init() {
-    console.log(88888888888);
     try {
+      this.#destinations = await this.#destinationsApiService.destinations;
+      this.#offers = await this.#offersApiService.offers;
       const points = await this.#pointsApiService.points;
       this.#points = points.map(this.#adaptToClient);
-      console.log(444444444444, this.#points);
     } catch(err) {
       this.#points = [];
     }
@@ -73,13 +81,26 @@ export default class PointModel extends Observable {
     this._notify(updateType);
   }
 
+  #mapOfferToPoint(point){
+    const offersType = this.#offers.find((offer) => offer.type === point.type);
+    return point.offers.map((offerId) =>
+      offersType.offers.find((offer) => offer.id === offerId)
+    );
+  }
 
-  #adaptToClient(point) {
-    const adaptedPoint = {...point,
+  #mapDestinationToPoint(point){
+    return this.#destinations.find((destination) => destination.id === point.destination);
+  }
+
+  #adaptToClient = (point) => {
+    const adaptedPoint = {
+      ...point,
       'dateFrom': point['date_from'] !== null ? new Date(point['date_from']) : point['date_from'],
       'dateTo': point['date_to'] !== null ? new Date(point['date_to']) : point['date_to'],
       'price': point.base_price,
       'isFavorite': point.is_favorite,
+      offers: this.#mapOfferToPoint(point),
+      destination: this.#mapDestinationToPoint(point)
     };
 
     // Зачем удалять
@@ -89,8 +110,5 @@ export default class PointModel extends Observable {
     delete adaptedPoint.is_favorite;
 
     return adaptedPoint;
-
-  }
-
-
+  };
 }
