@@ -1,8 +1,6 @@
 import ListFormView from '../view/event-item-form-view.js';
 import {replace, render} from '../framework/render.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import {DEFAULT__POINT} from '../view/event-item-form-view.js';
-import {nanoid} from 'nanoid';
 import {UserAction, UpdateType} from '../const.js';
 
 class EmptyPoint extends AbstractStatefulView {
@@ -48,7 +46,7 @@ export default class AddNewPointPresenter {
     this.#hendlePointChange(//(в main presenter) раньше искал по id во всех точках и заменял, сейчас this.#handleViewAction
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      {...point, id: nanoid()}
+      point
     );
   };
 
