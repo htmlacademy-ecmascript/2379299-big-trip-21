@@ -40,7 +40,6 @@ export default class PointModel extends Observable {
     this._notify(UpdateType.INIT);
   }
 
-
   async updatePoint(updateType, update) {
     const index = this.#points.findIndex((point) => point.id === update.id);
 
@@ -66,10 +65,10 @@ export default class PointModel extends Observable {
   }
 
   async addPoint(updateType, update) {
+    delete update.id;
 
     const response = await this.#pointsApiService.addPoint(update);
     const newPoint = this.#adaptToClient(response);
-
 
     this.#points = [
       newPoint,
@@ -122,7 +121,6 @@ export default class PointModel extends Observable {
       destination: this.#mapDestinationToPoint(point)
     };
 
-    // Зачем удалять
     delete adaptedPoint.date_from;
     delete adaptedPoint.date_to;
     delete adaptedPoint.base_price;

@@ -1,9 +1,9 @@
-import { POINT__TYPE, DESTINATION } from '../const.js';
+import { POINT__TYPE} from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {convertToCustomFormat} from '../utils.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import he from 'he';
+
 
 const Mode = {
   CREATE: 'Cancel',

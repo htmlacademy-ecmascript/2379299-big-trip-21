@@ -35,19 +35,18 @@ export default class AddNewPointPresenter {
     this.#emptyPoint = new EmptyPoint();
 
     render(this.#emptyPoint, this.#containerForEvent);
-    // перенести в Subscribe
     document.querySelector('.trip-main__event-add-btn').addEventListener('click', this.#handleOnOpenForm);
   }
 
   #handleOnFormSubmit = (point) => {
     this.#formOpened = false;
     this.#replaceFormToEmpty(); // закрывает форму
-    // тут надо сделать запрос на апи и результат положить в hendlePointChange
     this.#hendlePointChange(//(в main presenter) раньше искал по id во всех точках и заменял, сейчас this.#handleViewAction
       UserAction.ADD_POINT,
       UpdateType.MINOR,
       point
     );
+
   };
 
   #handleOnOpenForm = () => {

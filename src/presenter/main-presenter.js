@@ -1,6 +1,6 @@
 import ListContainerForEvent from '../view/container-for-event';
 import ListSortView from '../view/list-sort-view.js';
-import {render, remove, RenderPosition} from '../framework/render.js';
+import {render, remove} from '../framework/render.js';
 import ListEmptyView from '../view/list-empty-view.js';
 import AddNewPointPresenter from './add-new-point-presenter.js';
 import EventPresenter from './event-presenter.js';
