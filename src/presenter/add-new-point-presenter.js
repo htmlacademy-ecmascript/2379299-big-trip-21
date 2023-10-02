@@ -51,7 +51,7 @@ export default class AddNewPointPresenter {
       point
     ).then(() => {
       this.closeForm();
-    }).catch(() => console.log('Нужно потрясти форму'));
+    });
   };
 
   #handleOnOpenForm = () => {
