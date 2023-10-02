@@ -1,10 +1,9 @@
-import { POINT__TYPE, DESTINATION } from '../const.js';
+import { POINT__TYPE} from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {convertToCustomFormat} from '../utils.js';
-import {allDestinations, getCurrentOffers} from '../mock/point.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import he from 'he';
+
 
 const Mode = {
   CREATE: 'Cancel',
@@ -14,14 +13,14 @@ const Mode = {
 const DEFAULT__POINT = {
   id: null,
   price: 0,
-  dateFrom: '2019-07-10T22:55:56.845Z',
-  dateTo:  '2019-07-11T11:22:13.375Z',
+  dateFrom: '',
+  dateTo: '',
   destination: null,
-  type: 'Taxi',
+  type: 'taxi',
   offers: []
 };
 
-function createFormTemplate(point) {
+function createFormTemplate(point, allOffers, allDestinations) {
   const{destination, type, dateFrom, dateTo, price, offers, id} = point;
   const timeFrom = convertToCustomFormat(dateFrom);
   const timeTo = convertToCustomFormat(dateTo);
@@ -35,6 +34,7 @@ function createFormTemplate(point) {
     }, '');
   }
 
+  // fix POINT__TYPE from server
   const HTMLGroup = POINT__TYPE.reduce((result, item) => {
     const itemKey = item.toLowerCase();
     result += `<div class="event__type-item">
@@ -44,19 +44,21 @@ function createFormTemplate(point) {
     return result;
   }, '');
 
-  const destinationGroupHTML = DESTINATION.reduce((result, item) => {
-    result += `<option value="${item}"></option>`;
+  const destinationGroupHTML = allDestinations.reduce((result, item) => {
+    result += `<option value="${item.name}"></option>`;
     return result;
   }, '');
 
-  function createEventOffersGroup(allOffers){
+  function getCurrentOffers(offerType) {
+    return allOffers.find((el) => el.type === offerType.toLowerCase());
+  }
 
+  function createEventOffersGroup(pointOffers){
     const offersGroup = getCurrentOffers(type).offers.reduce((result, offerItem) => {
-      const isActive = allOffers.find((el) => el.id === offerItem.id) !== undefined;
-
+      const isActive = pointOffers.find((el) => el.id === offerItem.id) !== undefined;
       const titleKey = offerItem.title.toLowerCase();
       result += `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${titleKey}-1" type="checkbox" name="event-offer-${titleKey}" ${(isActive) ? 'checked' : ''}>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${titleKey}-1" type="checkbox" data-offer="${offerItem.id}" name="event-offer-${titleKey}" ${(isActive) ? 'checked' : ''}>
       <label class="event__offer-label" for="event-offer-${titleKey}-1">
         <span class="event__offer-title">${offerItem.title}class</span>
         &plus;&euro;&nbsp;
@@ -87,7 +89,7 @@ function createFormTemplate(point) {
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/${typeKey}.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="/img/icons/${typeKey}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -104,7 +106,7 @@ function createFormTemplate(point) {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${id ? destination.name : ''}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination?.name || ''}" list="destination-list-1">
             <datalist id="destination-list-1">
             ${destinationGroupHTML}
             </datalist>
@@ -123,7 +125,7 @@ function createFormTemplate(point) {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(String(price))} ">
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${ Number(price) }">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -161,9 +163,17 @@ export default class ListFormView extends AbstractStatefulView{
   #datepickerFrom = null;
   #datepickerTo = null;
   #handleOnClickDelete = null;
+  #offers = [];
+  #destinations = [];
 
-  constructor({point = DEFAULT__POINT, onClickButton, onFormSubmit, onClickDelete}){
+  constructor({
+    point = DEFAULT__POINT, onClickButton, onFormSubmit, onClickDelete,
+    offers, destinations
+  }){
     super();
+    this.#offers = offers;
+    this.#destinations = destinations;
+
     this._setState(ListFormView.parseTaskToState(point));
     this.#handleOnFormSubmit = onFormSubmit;
     this.#handleOnClick = onClickButton;
@@ -173,7 +183,7 @@ export default class ListFormView extends AbstractStatefulView{
   }
 
   get template() {
-    return createFormTemplate(this._state);
+    return createFormTemplate(this._state, this.#offers, this.#destinations);
   }
 
   _restoreHandlers = () => {
@@ -184,12 +194,18 @@ export default class ListFormView extends AbstractStatefulView{
     this.element.querySelector('.event__input--destination').addEventListener('input', this.#destinationChangeHandler);
     this.#setDatepicker();
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#ClickDeleteHandler);
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler);
+  };
+
+  resetForm = () => {
+    this.element.querySelector('form').reset();
+    this._setState({...DEFAULT__POINT});
+    this.updateElement({...DEFAULT__POINT});
   };
 
   #formSubmitHandle = (evt) => {
     evt.preventDefault();
     this.#handleOnFormSubmit(ListFormView.parseStateToTask(this._state));
-
   };
 
   #clickHandler = (evt) => {
@@ -198,13 +214,11 @@ export default class ListFormView extends AbstractStatefulView{
   };
 
   static parseTaskToState(point){
-    return{...point};
+    return {...point};
   }
 
   static parseStateToTask(state) {
-    const point = {...state};
-
-    return point;
+    return {...state};
   }
 
   #priceInputHandler = (evt) => {
@@ -216,7 +230,7 @@ export default class ListFormView extends AbstractStatefulView{
   #typePointChangeHandler = (evt) => {
     if (evt.target.classList.contains('event__type-label')) {
       const updatedState = {
-        type: evt.target.textContent,
+        type: evt.target.textContent.toLowerCase(),
         offers: []
       };
 
@@ -225,7 +239,9 @@ export default class ListFormView extends AbstractStatefulView{
   };
 
   #destinationChangeHandler = (evt) => {
-    const currentDestination = allDestinations.find((destinations) => destinations.name === evt.target.value);
+    const currentDestination = this.#destinations.find((destination) => destination.name === evt.target.value);
+    // console.log('destinationChangeHandler', evt.target.value, currentDestination, this.#destinations);
+
     if(!currentDestination){
       return;
     }
@@ -233,7 +249,18 @@ export default class ListFormView extends AbstractStatefulView{
       destination: currentDestination
     };
     this.updateElement(updatedState);
+  };
 
+  #offerChangeHandler = () => {
+    const checkedOffers = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
+    const curentOffers = checkedOffers.map((item) => item.dataset.offer);
+    const getAllOffersByType = this.#offers.find((item) => this._state.type === item.type);
+    const selectedOffers = curentOffers.map((offerId) => getAllOffersByType.offers.find((offer) => offer.id === offerId));
+
+    this._setState({
+      ...this._state.point,
+      offers: selectedOffers
+    });
   };
 
   removeElement() {

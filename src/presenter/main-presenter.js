@@ -1,3 +1,4 @@
+
 import ListContainerForEvent from '../view/container-for-event';
 import ListSortView from '../view/list-sort-view.js';
 import {render, remove} from '../framework/render.js';
@@ -6,6 +7,7 @@ import AddNewPointPresenter from './add-new-point-presenter.js';
 import EventPresenter from './event-presenter.js';
 import {sortDay, sortTime, sortPrice, filter} from '../utils.js';
 import {SortType,UserAction, UpdateType} from '../const';
+import LoadingView from '../view/loading-view.js';
 export default class MainPresenter {
   #container = null;
   #pointModel = null;
@@ -15,19 +17,24 @@ export default class MainPresenter {
   #newPointForm = null;
 
   #listSort = null;
-
+  #loadingComponent = new LoadingView();
   #containerForEvent = new ListContainerForEvent();
   #allPoints = new Map();
   #currentSortType = 'Day';
-
+  #isLoading = true;
   constructor({container, pointModel, filterModel}){
     this.#container = container;
     this.#pointModel = pointModel;
     this.#filterModel = filterModel;
 
-
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+
+    this.#newPointForm = new AddNewPointPresenter({
+      containerForEvent: this.#containerForEvent.element,
+      onPointChange: this.#handleViewAction,
+      closeEditForms: this.#hendleModeChange
+    });
   }
 
   get points(){
@@ -70,23 +77,9 @@ export default class MainPresenter {
     render(this.#listEmpty, this.#container);
   }
 
-
   init(){
-
-    this.#newPointForm = new AddNewPointPresenter({
-      containerForEvent: this.#containerForEvent.element,
-      onPointChange: this.#handleViewAction
-    });
-
     this.#renderSort();
-
-    if (!this.points.length){
-      this.#renderEmpty();
-      return;
-    }
-
     this.#renderPointsList();
-
   }
 
   #handleViewAction = (actionType, updateType, update) => { //раньше искал по id во всех точках и заменял , сейчас this.#hendlePointChange в event presenter
@@ -95,8 +88,7 @@ export default class MainPresenter {
         this.#pointModel.updatePoint(updateType, update);
         break;
       case UserAction.ADD_POINT:
-        this.#pointModel.addPoint(updateType, update);
-        break;
+        return this.#pointModel.addPoint(updateType, update);
       case UserAction.DELETE_POINT:
         this.#pointModel.deletePoint(updateType, update);
         break;
@@ -109,24 +101,38 @@ export default class MainPresenter {
         this.#allPoints.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
+      case UpdateType.MAJOR:
         this.#clearPointList();
         this.#renderPointsList();
         break;
-      case UpdateType.MAJOR:
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        this.#clearLoading();
         this.#clearPointList();
-
-        if (!this.points.length){
-          this.#renderEmpty();
-          return;
-        }
+        this.#renderNewForm();
         this.#renderPointsList();
         break;
     }
   };
 
-  #renderPointsList(){
+  #renderLoading() {
+    render(this.#loadingComponent, this.#container);
+  }
 
-    this.#newPointForm.init();
+  #clearLoading() {
+    remove(this.#loadingComponent);
+  }
+
+  #renderPointsList(){
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
+    if (!this.points.length){
+      this.#renderEmpty();
+      return;
+    }
 
     render(this.#containerForEvent, this.#container);
     for (let i = 0; i < this.points.length; i++) {
@@ -134,11 +140,21 @@ export default class MainPresenter {
     }
   }
 
+  #renderNewForm() {
+    this.#newPointForm.init({
+      offers: this.#pointModel.offers,
+      destinations: this.#pointModel.destinations
+    });
+  }
+
   #renderPoint(point){
     const pointPresentor = new EventPresenter({
       containerForEvent: this.#containerForEvent.element,
       onPointChange: this.#handleViewAction,
-      onModeChange: this.#hendleModeChange
+      onModeChange: this.#hendleModeChange,
+      offers: this.#pointModel.offers,
+      destinations: this.#pointModel.destinations,
+      closeAddForm: this.#newPointForm.closeForm
     });
 
     pointPresentor.init(point);
@@ -149,7 +165,7 @@ export default class MainPresenter {
     this.#allPoints.forEach((presenter) => presenter.destroy());
     this.#allPoints.clear();
     if (this.#listEmpty){
-      remove (this.#listEmpty);
+      remove(this.#listEmpty);
     }
   }
 
@@ -157,4 +173,3 @@ export default class MainPresenter {
     this.#allPoints.forEach((presenter) => presenter.resetView());
   };
 }
-

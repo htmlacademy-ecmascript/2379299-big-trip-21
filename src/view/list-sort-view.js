@@ -33,7 +33,13 @@ export default class ListSortView extends AbstractView{
     if (evt.target.tagName !== 'LABEL') {
       return;
     }
-    this.#handleSortTypeChange(evt.target.dataset.sortType);
+
+    const item = evt.target.dataset.sortType;
+    if (item === SortType.EVENT || item === SortType.OFFERS){
+      return;
+    }
+
+    this.#handleSortTypeChange(item);
   };
 
   get template() {
