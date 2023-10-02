@@ -34,20 +34,17 @@ export default class PointsApiService extends ApiService {
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
-    return response;
-  }
-
-  async deletePoint(point) {
-    const response = await this._load({
-      url: `points/${point.id}`,
-      method: Method.DELETE,
-      body: JSON.stringify(this.#adaptToServer(point)),
-      headers: new Headers({'Content-Type': 'application/json'}),
-    });
-
     const parsedResponse = await ApiService.parseResponse(response);
 
     return parsedResponse;
+  }
+
+  async deletePoint(point) {
+    return await this._load({
+      url: `points/${point.id}`,
+      method: Method.DELETE,
+      headers: new Headers({'Content-Type': 'application/json'}),
+    });
   }
 
   #adaptToServer(point) {
@@ -61,7 +58,6 @@ export default class PointsApiService extends ApiService {
       'offers': point.offers.map((item) => item.id),
     };
 
-    // Зачем удалять
     delete adaptedPoint.dateFrom;
     delete adaptedPoint.dateTo;
     delete adaptedPoint.price;

@@ -6,26 +6,26 @@ import {UpdateType} from '../const.js';
 export default class HeadPresenter {
   #siteHeadContainer = null;
   #filterModel = null;
+  #pointModel = null;
   #listInfo = new ListEventInfoView();
+  #listFilter = null;
 
   #handleClickTypeFilter = (filterType) => {
     this.#filterModel.setFilter(UpdateType.MAJOR,filterType);
   };
 
-  #ListFilter = new ListFilterView({
-    onClickTypeFilter: this.#handleClickTypeFilter
-
-  });
-
-  constructor({siteHeadContainer, filterModel}){
+  constructor({siteHeadContainer, filterModel, pointModel}){
     this.#siteHeadContainer = siteHeadContainer;
     this.#filterModel = filterModel;
+    this.#pointModel = pointModel;
   }
 
   init(){
+    this.#listFilter = new ListFilterView({
+      onClickTypeFilter: this.#handleClickTypeFilter,
+      pointModel: this.#pointModel,
+    });
     render(this.#listInfo, this.#siteHeadContainer, RenderPosition.AFTERBEGIN);
-    render(this.#ListFilter, this.#siteHeadContainer);
+    render(this.#listFilter, this.#siteHeadContainer);
   }
 }
-
-

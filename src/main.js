@@ -18,9 +18,8 @@ const pointModel = new PointModel({
   destinationsApiService: new DestinationsApiService(END_POINT, AUTHORIZATION),
 });
 const filterModel = new FilterModel();
-const headPresenter = new HeadPresenter({siteHeadContainer, filterModel});
+const headPresenter = new HeadPresenter({siteHeadContainer, filterModel, pointModel});
 const mainPresenter = new MainPresenter({container:siteEventContainer, pointModel, filterModel});
 
-pointModel.init();
-headPresenter.init();
+pointModel.init().then(() => headPresenter.init());
 mainPresenter.init();

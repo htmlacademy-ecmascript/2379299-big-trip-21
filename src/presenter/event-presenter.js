@@ -19,18 +19,21 @@ export default class EventPresenter {
   #pointItem = null;
   #pointForm = null;
 
+  #closeAddForm = null;
+
   #hendlePointChange = null;
   #hendleModeChange = null;
 
   constructor({
     containerForEvent, onPointChange, onModeChange,
-    offers, destinations
+    offers, destinations, closeAddForm
   }){
     this.#containerForEvent = containerForEvent;
     this.#hendlePointChange = onPointChange;
     this.#hendleModeChange = onModeChange;
     this.#offers = offers;
     this.#destinations = destinations;
+    this.#closeAddForm = closeAddForm;
   }
 
   init(point){
@@ -83,6 +86,7 @@ export default class EventPresenter {
   };
 
   #handleOnClick = () => {
+    this.#closeAddForm();
     this.#replacePointToForm();
   };
 
@@ -104,7 +108,7 @@ export default class EventPresenter {
     );
   };
 
-  #replacePointToForm(){
+  #replacePointToForm() {
     replace(this.#pointForm, this.#pointItem);
     document.addEventListener('keydown', this.#escKeyDownHandler);
     this.#hendleModeChange();
@@ -117,13 +121,14 @@ export default class EventPresenter {
     }
   }
 
-  #replaceFormToPoint(){
+  #replaceFormToPoint() {
     replace(this.#pointItem, this.#pointForm);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
     this.#mode = Mode.DEFAULT;
   }
 
   #handleOnClickDelete = () => {
+    this.#replaceFormToPoint();
     this.#hendlePointChange(
       UserAction.DELETE_POINT,
       UpdateType.MINOR,

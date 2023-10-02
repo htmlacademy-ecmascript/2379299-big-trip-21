@@ -1,3 +1,4 @@
+
 import Observable from '../framework/observable.js';
 import {UpdateType} from '../const.js';
 
@@ -86,13 +87,8 @@ export default class PointModel extends Observable {
     }
 
     try {
-
-      await this.#pointsApiService.deletePoint (update);
-      this.#points = [
-        ...this.#points.slice(0, index),
-        ...this.#points.slice(index + 1),
-      ];
-
+      await this.#pointsApiService.deletePoint(update);
+      this.#points.splice(index, 1);
       this._notify(updateType);
     }catch(err) {
       throw new Error('Can\'t delete point');

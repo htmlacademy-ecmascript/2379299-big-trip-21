@@ -1,3 +1,4 @@
+
 import ListContainerForEvent from '../view/container-for-event';
 import ListSortView from '../view/list-sort-view.js';
 import {render, remove} from '../framework/render.js';
@@ -31,7 +32,8 @@ export default class MainPresenter {
 
     this.#newPointForm = new AddNewPointPresenter({
       containerForEvent: this.#containerForEvent.element,
-      onPointChange: this.#handleViewAction
+      onPointChange: this.#handleViewAction,
+      closeEditForms: this.#hendleModeChange
     });
   }
 
@@ -86,8 +88,7 @@ export default class MainPresenter {
         this.#pointModel.updatePoint(updateType, update);
         break;
       case UserAction.ADD_POINT:
-        this.#pointModel.addPoint(updateType, update);
-        break;
+        return this.#pointModel.addPoint(updateType, update);
       case UserAction.DELETE_POINT:
         this.#pointModel.deletePoint(updateType, update);
         break;
@@ -152,7 +153,8 @@ export default class MainPresenter {
       onPointChange: this.#handleViewAction,
       onModeChange: this.#hendleModeChange,
       offers: this.#pointModel.offers,
-      destinations: this.#pointModel.destinations
+      destinations: this.#pointModel.destinations,
+      closeAddForm: this.#newPointForm.closeForm
     });
 
     pointPresentor.init(point);

@@ -13,8 +13,8 @@ const Mode = {
 const DEFAULT__POINT = {
   id: null,
   price: 0,
-  dateFrom: '2019-07-10T22:55:56.845Z',
-  dateTo:  '2019-07-11T11:22:13.375Z',
+  dateFrom: '',
+  dateTo: '',
   destination: null,
   type: 'taxi',
   offers: []
@@ -34,6 +34,7 @@ function createFormTemplate(point, allOffers, allDestinations) {
     }, '');
   }
 
+  // fix POINT__TYPE from server
   const HTMLGroup = POINT__TYPE.reduce((result, item) => {
     const itemKey = item.toLowerCase();
     result += `<div class="event__type-item">
@@ -194,6 +195,12 @@ export default class ListFormView extends AbstractStatefulView{
     this.#setDatepicker();
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#ClickDeleteHandler);
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler);
+  };
+
+  resetForm = () => {
+    this.element.querySelector('form').reset();
+    this._setState({...DEFAULT__POINT});
+    this.updateElement({...DEFAULT__POINT});
   };
 
   #formSubmitHandle = (evt) => {
