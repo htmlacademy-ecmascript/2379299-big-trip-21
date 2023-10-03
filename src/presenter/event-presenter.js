@@ -131,13 +131,10 @@ export default class EventPresenter {
   }
 
   #handleOnClickDelete = () => {
-    this.#replaceFormToPoint();
     this.#hendlePointChange(
       UserAction.DELETE_POINT,
-      UpdateType.MINOR,
+      UpdateType.MAJOR,
       this.#point
     );
   };
 }
-
-

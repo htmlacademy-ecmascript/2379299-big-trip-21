@@ -36,7 +36,6 @@ export default class ListFilterView extends AbstractView{
   }
 
   #ClickTypeFilter = (evt) => {
-    console.log(8888888888888888888888888)
     const filterType = evt.target.getAttribute('data-filter-type');
     const filterInput = this.element.querySelector(`#filter-${filterType?.toLowerCase()}`);
     const isFilterDisabled = filterInput?.hasAttribute('disabled');

@@ -1,5 +1,5 @@
 import Observable from '../framework/observable.js';
-import {UpdateType, UserAction} from '../const.js';
+import {UpdateType} from '../const.js';
 export default class PointModel extends Observable {
   #offers = [];
   #destinations = [];
@@ -82,7 +82,6 @@ export default class PointModel extends Observable {
 
       this._notify(updateType, newPoint);
     } catch (e) {
-      console.log(e);
       this._notify(UpdateType.ERROR, update);
     }
   }

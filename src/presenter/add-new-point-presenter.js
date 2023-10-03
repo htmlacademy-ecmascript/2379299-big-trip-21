@@ -47,6 +47,7 @@ export default class AddNewPointPresenter {
         this.closeForm();
         break;
       case UpdateType.ERROR:
+        this.#newPointForm.resetLoadings();
         this.#newPointForm.shake();
         break;
     }
