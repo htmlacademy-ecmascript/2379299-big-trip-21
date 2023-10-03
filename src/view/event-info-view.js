@@ -15,7 +15,6 @@ function createEventInfoTemplate() {
   </section>`
   );
 }
-
 export default class ListEventInfoView extends AbstractView{
   get template() {
     return createEventInfoTemplate();

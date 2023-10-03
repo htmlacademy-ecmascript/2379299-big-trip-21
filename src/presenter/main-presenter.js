@@ -1,4 +1,3 @@
-
 import ListContainerForEvent from '../view/container-for-event';
 import ListSortView from '../view/list-sort-view.js';
 import {render, remove} from '../framework/render.js';
@@ -8,6 +7,7 @@ import EventPresenter from './event-presenter.js';
 import {sortDay, sortTime, sortPrice, filter} from '../utils.js';
 import {SortType,UserAction, UpdateType} from '../const';
 import LoadingView from '../view/loading-view.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker';
 export default class MainPresenter {
   #container = null;
   #pointModel = null;
@@ -22,6 +22,9 @@ export default class MainPresenter {
   #allPoints = new Map();
   #currentSortType = 'Day';
   #isLoading = true;
+
+  #uiBlocker = new UiBlocker({lowerLimit: 0, upperLimit: 500});
+
   constructor({container, pointModel, filterModel}){
     this.#container = container;
     this.#pointModel = pointModel;
@@ -33,7 +36,8 @@ export default class MainPresenter {
     this.#newPointForm = new AddNewPointPresenter({
       containerForEvent: this.#containerForEvent.element,
       onPointChange: this.#handleViewAction,
-      closeEditForms: this.#hendleModeChange
+      closeEditForms: this.#hendleModeChange,
+      pointModel: this.#pointModel
     });
   }
 
@@ -82,7 +86,9 @@ export default class MainPresenter {
     this.#renderPointsList();
   }
 
-  #handleViewAction = (actionType, updateType, update) => { //раньше искал по id во всех точках и заменял , сейчас this.#hendlePointChange в event presenter
+  #handleViewAction = (actionType, updateType, update) => {
+    this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointModel.updatePoint(updateType, update);
@@ -96,9 +102,12 @@ export default class MainPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
+    this.#uiBlocker.unblock();
+
     switch (updateType) {
       case UpdateType.PATCH:
         this.#allPoints.get(data.id).init(data);
+        this.#allPoints.get(data.id).resetView();
         break;
       case UpdateType.MINOR:
       case UpdateType.MAJOR:
@@ -111,6 +120,12 @@ export default class MainPresenter {
         this.#clearPointList();
         this.#renderNewForm();
         this.#renderPointsList();
+        break;
+      case UpdateType.ERROR:
+        if (data?.id !== undefined){
+          this.#allPoints.get(data.id).pointForm.shake();
+          this.#allPoints.get(data.id).pointForm.resetLoadings();
+        }
         break;
     }
   };

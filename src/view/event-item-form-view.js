@@ -4,7 +4,6 @@ import {convertToCustomFormat} from '../utils.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-
 const Mode = {
   CREATE: 'Cancel',
   EDIT: 'Delete'
@@ -21,7 +20,18 @@ const DEFAULT__POINT = {
 };
 
 function createFormTemplate(point, allOffers, allDestinations) {
-  const{destination, type, dateFrom, dateTo, price, offers, id} = point;
+  const{
+    destination,
+    type, dateFrom,
+    dateTo,
+    price,
+    offers,
+    id,
+    isSaving,
+    isDeleting
+  } = point;
+
+  const isDisabled = [isDeleting, isSaving].includes(true);
   const timeFrom = convertToCustomFormat(dateFrom);
   const timeTo = convertToCustomFormat(dateTo);
   const typeKey = type.toLowerCase();
@@ -34,7 +44,6 @@ function createFormTemplate(point, allOffers, allDestinations) {
     }, '');
   }
 
-  // fix POINT__TYPE from server
   const HTMLGroup = POINT__TYPE.reduce((result, item) => {
     const itemKey = item.toLowerCase();
     result += `<div class="event__type-item">
@@ -74,6 +83,14 @@ function createFormTemplate(point, allOffers, allDestinations) {
 
   const offersGroupHTML = createEventOffersGroup(offers);
 
+  function textDeleting(){
+    if (!id){
+      return Mode.CREATE;
+    }
+
+    return isDeleting ? 'Deleting...' : Mode.EDIT;
+  }
+
   function openClouseEvent(idPoint){
     if (!idPoint){
       return`
@@ -97,7 +114,6 @@ function createFormTemplate(point, allOffers, allDestinations) {
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Event type</legend>
                 ${HTMLGroup}
-
               </fieldset>
             </div>
           </div>
@@ -108,7 +124,7 @@ function createFormTemplate(point, allOffers, allDestinations) {
             </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination?.name || ''}" list="destination-list-1">
             <datalist id="destination-list-1">
-            ${destinationGroupHTML}
+              ${destinationGroupHTML}
             </datalist>
           </div>
 
@@ -128,8 +144,8 @@ function createFormTemplate(point, allOffers, allDestinations) {
             <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${ Number(price) }">
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">${!id ? Mode.CREATE : Mode.EDIT }</button>
+          <button class="event__save-btn btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'saving...' : 'save'}</button>
+          <button class="event__reset-btn btn" type="reset" ${isDisabled ? 'disabled' : ''}>${textDeleting()}</button>
           ${openClouseEvent()}
         </header>
         <section class="event__details">
@@ -178,7 +194,6 @@ export default class ListFormView extends AbstractStatefulView{
     this.#handleOnFormSubmit = onFormSubmit;
     this.#handleOnClick = onClickButton;
     this.#handleOnClickDelete = onClickDelete;
-
     this._restoreHandlers();
   }
 
@@ -199,13 +214,17 @@ export default class ListFormView extends AbstractStatefulView{
 
   resetForm = () => {
     this.element.querySelector('form').reset();
-    this._setState({...DEFAULT__POINT});
-    this.updateElement({...DEFAULT__POINT});
+    this.updateElement({...DEFAULT__POINT, isSaving: false, isDeleting: false});
+  };
+
+  resetLoadings = () => {
+    this.updateElement({...this.state, isSaving: false, isDeleting: false});
   };
 
   #formSubmitHandle = (evt) => {
     evt.preventDefault();
     this.#handleOnFormSubmit(ListFormView.parseStateToTask(this._state));
+    this.updateElement({...this.state, isSaving: true});
   };
 
   #clickHandler = (evt) => {
@@ -214,11 +233,18 @@ export default class ListFormView extends AbstractStatefulView{
   };
 
   static parseTaskToState(point){
-    return {...point};
+    return {
+      ...point,
+      isSaving: false,
+      isDeleting: false,
+    };
   }
 
   static parseStateToTask(state) {
-    return {...state};
+    delete state.isDisabled;
+    delete state.isSaving;
+    delete state.isDeleting;
+    return { ...state };
   }
 
   #priceInputHandler = (evt) => {
@@ -240,7 +266,6 @@ export default class ListFormView extends AbstractStatefulView{
 
   #destinationChangeHandler = (evt) => {
     const currentDestination = this.#destinations.find((destination) => destination.name === evt.target.value);
-    // console.log('destinationChangeHandler', evt.target.value, currentDestination, this.#destinations);
 
     if(!currentDestination){
       return;
@@ -325,6 +350,7 @@ export default class ListFormView extends AbstractStatefulView{
   #ClickDeleteHandler = (evt) => {
     evt.preventDefault();
     this.#handleOnClickDelete(ListFormView.parseStateToTask(this._state));
+    this.updateElement({...this.state, isDeleting: true});
   };
 
 }

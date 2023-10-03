@@ -1,8 +1,7 @@
 import ListFormView, { DEFAULT__POINT } from '../view/event-item-form-view.js';
 import {replace, render} from '../framework/render.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import {UserAction, UpdateType} from '../const.js';
-
+import {UpdateType, UserAction} from '../const.js';
 class EmptyPoint extends AbstractStatefulView {
   get template() {
     return '<li></li>';
@@ -15,11 +14,17 @@ export default class AddNewPointPresenter {
   #emptyPoint = null;
   #hendlePointChange = null;
   #formOpened = false;
+  #addButton = null;
 
-  constructor({containerForEvent, onPointChange, closeEditForms}){
+  constructor({containerForEvent, onPointChange, closeEditForms, pointModel}){
     this.#containerForEvent = containerForEvent;
     this.#hendlePointChange = onPointChange;
     this.#closeEditForms = closeEditForms;
+    this.#addButton = document.querySelector('.trip-main__event-add-btn');
+
+    this.#addButton.addEventListener('click', this.#handleOnOpenForm);
+
+    pointModel.addObserver(this.#handleModelEvent);
   }
 
   init({offers, destinations}){
@@ -33,31 +38,43 @@ export default class AddNewPointPresenter {
     this.#emptyPoint = new EmptyPoint();
 
     render(this.#emptyPoint, this.#containerForEvent);
-    document.querySelector('.trip-main__event-add-btn').addEventListener('click', this.#handleOnOpenForm);
   }
+
+  #handleModelEvent = (updateType) => {
+    switch (updateType) {
+      case UpdateType.MINOR:
+      case UpdateType.MAJOR:
+        this.closeForm();
+        break;
+      case UpdateType.ERROR:
+        this.#newPointForm.resetLoadings();
+        this.#newPointForm.shake();
+        break;
+    }
+  };
 
   closeForm = () => {
     if (this.#formOpened === true){
       this.#newPointForm.resetForm();
       this.#formOpened = false;
+      this.#addButton.disabled = false;
       this.#replaceFormToEmpty();
     }
   };
 
   #handleOnFormSubmit = (point) => {
-    this.#hendlePointChange(//(в main presenter) раньше искал по id во всех точках и заменял, сейчас this.#handleViewAction
+    this.#hendlePointChange(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
       point
-    ).then(() => {
-      this.closeForm();
-    });
+    );
   };
 
   #handleOnOpenForm = () => {
     if (this.#formOpened === false){
       this.#replaceEmptyToForm();
       this.#formOpened = true;
+      this.#addButton.disabled = true;
       this.#closeEditForms();
     }
   };
