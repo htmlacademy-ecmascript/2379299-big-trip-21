@@ -4,7 +4,6 @@ import {convertToCustomFormat} from '../utils.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-
 const Mode = {
   CREATE: 'Cancel',
   EDIT: 'Delete'
@@ -34,7 +33,6 @@ function createFormTemplate(point, allOffers, allDestinations) {
     }, '');
   }
 
-  // fix POINT__TYPE from server
   const HTMLGroup = POINT__TYPE.reduce((result, item) => {
     const itemKey = item.toLowerCase();
     result += `<div class="event__type-item">
@@ -205,6 +203,7 @@ export default class ListFormView extends AbstractStatefulView{
 
   #formSubmitHandle = (evt) => {
     evt.preventDefault();
+    console.log('formSubmitHandle', this._state);
     this.#handleOnFormSubmit(ListFormView.parseStateToTask(this._state));
   };
 
@@ -240,7 +239,6 @@ export default class ListFormView extends AbstractStatefulView{
 
   #destinationChangeHandler = (evt) => {
     const currentDestination = this.#destinations.find((destination) => destination.name === evt.target.value);
-    // console.log('destinationChangeHandler', evt.target.value, currentDestination, this.#destinations);
 
     if(!currentDestination){
       return;

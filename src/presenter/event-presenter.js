@@ -73,6 +73,10 @@ export default class EventPresenter {
     remove(prevPointForm);
   }
 
+  get pointForm(){
+    return this.#pointForm;
+  }
+
   destroy() {
     remove(this.#pointItem);
     remove(this.#pointForm);
@@ -92,8 +96,7 @@ export default class EventPresenter {
 
   #handleOnFormSubmit = (point) => {
     const isMinorUpdate = !isDatesEqual(convertToCustomFormat(this.#point.dateFrom), convertToCustomFormat(point.dateFrom) || (convertToCustomFormat(this.#point.dateTo), convertToCustomFormat(point.dateTo))) || this.#point.price !== point.price;
-    this.#replaceFormToPoint(); // закрывает форму
-    this.#hendlePointChange( //(в main presenter) раньше искал по id во всех точках и заменял, сейчас this.#handleViewAction
+    this.#hendlePointChange(
       UserAction.UPDATE_POINT,
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       point

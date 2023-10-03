@@ -109,6 +109,8 @@ const UpdateType = {
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
   INIT: 'INIT',
+  IDLE: 'IDLE',
+  ERROR: 'ERROR'
 };
 
 export {POINT__TYPE, DESTINATION, CITY__DESCRIPTIONS, PHOTO__DESCRIPTIONS, FilterType, SortType, TITLE, DATES_FROM, DATES_TO, UserAction, UpdateType};

@@ -1,7 +1,5 @@
-
 import Observable from '../framework/observable.js';
-import {UpdateType} from '../const.js';
-
+import {UpdateType, UserAction} from '../const.js';
 export default class PointModel extends Observable {
   #offers = [];
   #destinations = [];
@@ -30,6 +28,7 @@ export default class PointModel extends Observable {
   }
 
   async init() {
+    this._notify(UpdateType.IDLE);
     try {
       this.#destinations = await this.#destinationsApiService.destinations;
       this.#offers = await this.#offersApiService.offers;
@@ -45,12 +44,13 @@ export default class PointModel extends Observable {
     const index = this.#points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {
+      this._notify(UpdateType.ERROR, update);
       throw new Error('Can\'t update unexisting point');
     }
 
     try {
-
       const response = await this.#pointsApiService.updatePoint(update);
+
       const updatedPoint = this.#adaptToClient(response);
 
       this.#points = [
@@ -60,23 +60,31 @@ export default class PointModel extends Observable {
       ];
 
       this._notify(updateType, updatedPoint);
-    }catch(err) {
+    } catch(err) {
+      this._notify(UpdateType.ERROR, update);
       throw new Error('Can\'t update point');
     }
   }
 
   async addPoint(updateType, update) {
-    delete update.id;
+    if (update?.id !== undefined){
+      delete update.id;
+    }
 
-    const response = await this.#pointsApiService.addPoint(update);
-    const newPoint = this.#adaptToClient(response);
+    try {
+      const response = await this.#pointsApiService.addPoint(update);
+      const newPoint = this.#adaptToClient(response);
 
-    this.#points = [
-      newPoint,
-      ...this.#points,
-    ];
+      this.#points = [
+        newPoint,
+        ...this.#points,
+      ];
 
-    this._notify(updateType, newPoint);
+      this._notify(updateType, newPoint);
+    } catch (e) {
+      console.log(e);
+      this._notify(UpdateType.ERROR, update);
+    }
   }
 
   async deletePoint(updateType, update) {

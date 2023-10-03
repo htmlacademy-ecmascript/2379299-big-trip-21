@@ -1,4 +1,3 @@
-
 import ListContainerForEvent from '../view/container-for-event';
 import ListSortView from '../view/list-sort-view.js';
 import {render, remove} from '../framework/render.js';
@@ -33,7 +32,8 @@ export default class MainPresenter {
     this.#newPointForm = new AddNewPointPresenter({
       containerForEvent: this.#containerForEvent.element,
       onPointChange: this.#handleViewAction,
-      closeEditForms: this.#hendleModeChange
+      closeEditForms: this.#hendleModeChange,
+      pointModel: this.#pointModel
     });
   }
 
@@ -82,7 +82,7 @@ export default class MainPresenter {
     this.#renderPointsList();
   }
 
-  #handleViewAction = (actionType, updateType, update) => { //раньше искал по id во всех точках и заменял , сейчас this.#hendlePointChange в event presenter
+  #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointModel.updatePoint(updateType, update);
@@ -111,6 +111,11 @@ export default class MainPresenter {
         this.#clearPointList();
         this.#renderNewForm();
         this.#renderPointsList();
+        break;
+      case UpdateType.ERROR:
+        if (data?.id !== undefined){
+          this.#allPoints.get(data.id).pointForm.shake();
+        }
         break;
     }
   };
