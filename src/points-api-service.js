@@ -7,9 +7,11 @@ const Method = {
   DELETE: 'DELETE',
 };
 export default class PointsApiService extends ApiService {
-  get points() {
-    return this._load({url: 'points'})
-      .then(ApiService.parseResponse);
+  async getPoints() {
+    const response = await this._load({url: 'points'});
+    const parsedResponse = await ApiService.parseResponse(response);
+
+    return parsedResponse;
   }
 
   async updatePoint(point) {

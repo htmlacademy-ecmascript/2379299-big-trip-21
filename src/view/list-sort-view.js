@@ -1,4 +1,4 @@
-import {SortType} from '../const.js';
+import {SortType, UpdateType} from '../const.js';
 import AbstractView from '../framework/view/abstract-stateful-view.js';
 
 const Sorts = Object.values(SortType).reduce((result, item) => {
@@ -22,11 +22,13 @@ export default class ListSortView extends AbstractView{
 
   #handleSortTypeChange = null;
 
-  constructor({onSortTypeChange}) {
+  constructor({onSortTypeChange, filterModel}) {
     super();
     this.#handleSortTypeChange = onSortTypeChange;
 
     this.element.addEventListener('click', this.#sortChangeHandler);
+
+    filterModel.addObserver(this.#handleModelEvent);
   }
 
   #sortChangeHandler = (evt) => {
@@ -40,6 +42,15 @@ export default class ListSortView extends AbstractView{
     }
 
     this.#handleSortTypeChange(item);
+  };
+
+  #handleModelEvent = (updateType) => {
+    switch (updateType) {
+      case UpdateType.UI_RESET:
+        this.#handleSortTypeChange(SortType.DAY);
+        document.querySelector('form.trip-events__trip-sort').reset();
+        break;
+    }
   };
 
   get template() {

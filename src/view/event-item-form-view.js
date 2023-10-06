@@ -15,7 +15,7 @@ const DEFAULT__POINT = {
   dateFrom: '',
   dateTo: '',
   destination: null,
-  type: 'taxi',
+  type: 'flight',
   offers: []
 };
 
@@ -157,23 +157,22 @@ function createFormTemplate(point, allOffers, allDestinations) {
             </div>
           </section>
 
+          <section class="event__section  event__section--destination">
+            <h3 class="event__section-title  event__section-title--destination">${destination ? destination.name : ''}</h3>
+            <p class="event__destination-description">${destination ? destination.description : ''}</p>
 
-        <section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">${destination ? destination.name : ''}</h3>
-          <p class="event__destination-description">${destination ? destination.description : ''}</p>
-
-          <div class="event__photos-container">
-            <div class="event__photos-tape">
-              ${currentDestinationPictures}
+            <div class="event__photos-container">
+              <div class="event__photos-tape">
+                ${currentDestinationPictures}
+              </div>
             </div>
-          </div>
+          </section>
         </section>
-      </section>
       </form>
     </li>`
   );
 }
-export default class ListFormView extends AbstractStatefulView{
+export default class EventItemFormView extends AbstractStatefulView{
   #handleOnFormSubmit = null;
   #handleOnClick = null;
   #datepickerFrom = null;
@@ -190,7 +189,7 @@ export default class ListFormView extends AbstractStatefulView{
     this.#offers = offers;
     this.#destinations = destinations;
 
-    this._setState(ListFormView.parseTaskToState(point));
+    this._setState(EventItemFormView.parseTaskToState(point));
     this.#handleOnFormSubmit = onFormSubmit;
     this.#handleOnClick = onClickButton;
     this.#handleOnClickDelete = onClickDelete;
@@ -208,7 +207,7 @@ export default class ListFormView extends AbstractStatefulView{
     this.element.querySelector('.event__type-wrapper').addEventListener('click', this.#typePointChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('input', this.#destinationChangeHandler);
     this.#setDatepicker();
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#ClickDeleteHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#clickDeleteHandler);
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler);
   };
 
@@ -223,7 +222,7 @@ export default class ListFormView extends AbstractStatefulView{
 
   #formSubmitHandle = (evt) => {
     evt.preventDefault();
-    this.#handleOnFormSubmit(ListFormView.parseStateToTask(this._state));
+    this.#handleOnFormSubmit(EventItemFormView.parseStateToTask(this._state));
     this.updateElement({...this.state, isSaving: true});
   };
 
@@ -347,10 +346,12 @@ export default class ListFormView extends AbstractStatefulView{
     this.#datepickerFrom.set('maxDate', this._state.dateTo);
   };
 
-  #ClickDeleteHandler = (evt) => {
+  #clickDeleteHandler = (evt) => {
     evt.preventDefault();
-    this.#handleOnClickDelete(ListFormView.parseStateToTask(this._state));
-    this.updateElement({...this.state, isDeleting: true});
+    this.#handleOnClickDelete(EventItemFormView.parseStateToTask(this._state));
+    if (this._state.id !== null){
+      this.updateElement({...this.state, isDeleting: true});
+    }
   };
 
 }

@@ -2,7 +2,7 @@ import HeadPresenter from './presenter/head-presenter.js';
 import MainPresenter from './presenter/main-presenter.js';
 import PointModel from './model/point-model.js';
 import FilterModel from './model/filter-model.js';
-import PointsApiService from './point-api-service.js';
+import PointsApiService from './points-api-service.js';
 import OffersApiService from './offers-api-service.js';
 import DestinationsApiService from './destinations-api-service.js';
 

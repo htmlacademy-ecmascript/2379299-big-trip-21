@@ -1,4 +1,4 @@
-import ListEventInfoView from '../view/event-info-view.js';
+import ListEventInfoView from '../view/list-event-info-view.js';
 import ListFilterView from '../view/list-filter-view.js';
 import {render, RenderPosition} from '../framework/render.js';
 import {UpdateType} from '../const.js';
@@ -28,6 +28,7 @@ export default class HeadPresenter {
     this.#listFilter = new ListFilterView({
       onClickTypeFilter: this.#handleClickTypeFilter,
       pointModel: this.#pointModel,
+      filterModel: this.#filterModel
     });
     render(this.#listInfo, this.#siteHeadContainer, RenderPosition.AFTERBEGIN);
     render(this.#listFilter, this.#siteHeadContainer);
