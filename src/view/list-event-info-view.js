@@ -1,13 +1,15 @@
 import AbstractView from '../framework/view/abstract-stateful-view.js';
+import {formatDateMonth} from '../utils.js';
 
-function createEventInfoTemplate({sum, cities}) {
+function createEventInfoTemplate({sum, cities, dates}) {
   const citiesString = cities.join(' &mdash; ');
+  const datesString = dates.join('&nbsp;&mdash;&nbsp;');
 
   return (
     ` <section class="trip-main__trip-info  trip-info">
         <div class="trip-info__main">
           <h1 class="trip-info__title">${citiesString}</h1>
-          <p class="trip-info__dates">Mar 18&nbsp;&mdash;&nbsp;20</p>
+          <p class="trip-info__dates">${datesString}</p>
         </div>
 
         <p class="trip-info__cost">
@@ -25,7 +27,8 @@ export default class ListEventInfoView extends AbstractView{
     this.#pointModel.addObserver(this.#handleModelEvent);
     this._setState({
       sum: 0,
-      cities: ['Amsterdam','Chamonix','Geneva']
+      cities: [],
+      dates: []
     });
 
   }
@@ -38,18 +41,33 @@ export default class ListEventInfoView extends AbstractView{
     }, 0);
   }
 
-  #calculateCities(points){
-    const counter = points.reduce((sum) => sum + 1, 1);
-
-    if (counter === 0){
+  #calculateDates(points){
+    if (points.length === 0){
       return [];
     }
 
-    if (counter > 3){
+    if (points.length === 1){
+      return [
+        formatDateMonth(points[0]?.dateFrom)
+      ];
+    }
+
+    return [
+      formatDateMonth(points[0]?.dateFrom),
+      formatDateMonth(points[points.length - 1]?.dateFrom)
+    ];
+  }
+
+  #calculateCities(points){
+    if (points.length === 0){
+      return [];
+    }
+
+    if (points.length > 3){
       return [
         points[0]?.destination?.name,
         '...',
-        points[counter - 2]?.destination?.name
+        points[points.length - 1]?.destination?.name
       ];
     }
 
@@ -60,7 +78,8 @@ export default class ListEventInfoView extends AbstractView{
     const points = this.#pointModel.points;
     this.updateElement({
       sum: this.#calculateSum(points),
-      cities: this.#calculateCities(points)
+      cities: this.#calculateCities(points),
+      dates: this.#calculateDates(points)
     });
   };
 
@@ -69,7 +88,8 @@ export default class ListEventInfoView extends AbstractView{
   get template() {
     return createEventInfoTemplate({
       sum: this._state?.sum || 0,
-      cities: this._state?.cities || []
+      cities: this._state?.cities || [],
+      dates: this._state?.dates || []
     });
   }
 }

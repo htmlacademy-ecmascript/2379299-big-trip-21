@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import {FilterType} from './const';
 
-const DATE_MONTH_FORMAT = 'D MMMM';
 const TIME_FORMAT = 'HH:mm';
 export default class UniqueRandomGenerator {
   constructor(min, max) {
@@ -36,7 +35,11 @@ function getRandomElementFromArray(elements) {
 }
 
 function formatDateMonth(dueDate) {
-  return dueDate ? dayjs(dueDate).format(DATE_MONTH_FORMAT) : '';
+  const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  const day = dueDate.getDate();
+  const month = months[dueDate.getMonth()];
+
+  return `${day} ${month}`;
 }
 
 function formatTime(dueDate) {
