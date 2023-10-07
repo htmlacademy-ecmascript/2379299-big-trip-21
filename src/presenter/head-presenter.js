@@ -1,4 +1,4 @@
-import ListEventInfoView from '../view/event-info-view.js';
+import ListEventInfoView from '../view/list-event-info-view.js';
 import ListFilterView from '../view/list-filter-view.js';
 import {render, RenderPosition} from '../framework/render.js';
 import {UpdateType} from '../const.js';
@@ -6,7 +6,7 @@ export default class HeadPresenter {
   #siteHeadContainer = null;
   #filterModel = null;
   #pointModel = null;
-  #listInfo = new ListEventInfoView();
+  #listInfo = null;
   #listFilter = null;
   #addButton = null;
 
@@ -18,6 +18,9 @@ export default class HeadPresenter {
     this.#siteHeadContainer = siteHeadContainer;
     this.#filterModel = filterModel;
     this.#pointModel = pointModel;
+    this.#listInfo = new ListEventInfoView({
+      pointModel: pointModel
+    });
 
     this.#pointModel.addObserver(this.#handleModelEvent);
     this.#addButton = document.querySelector('.trip-main__event-add-btn');
@@ -25,9 +28,11 @@ export default class HeadPresenter {
   }
 
   init(){
+
     this.#listFilter = new ListFilterView({
       onClickTypeFilter: this.#handleClickTypeFilter,
       pointModel: this.#pointModel,
+      filterModel: this.#filterModel
     });
     render(this.#listInfo, this.#siteHeadContainer, RenderPosition.AFTERBEGIN);
     render(this.#listFilter, this.#siteHeadContainer);

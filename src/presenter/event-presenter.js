@@ -1,5 +1,5 @@
 import EventItemView from '../view/event-item-view';
-import ListFormView from '../view/event-item-form-view.js';
+import EventItemFormView from '../view/event-item-form-view.js';
 import {render, replace, remove} from '../framework/render.js';
 import {UserAction, UpdateType} from '../const';
 import {isDatesEqual, convertToCustomFormat} from '../utils.js';
@@ -47,7 +47,7 @@ export default class EventPresenter {
       onFavoriteClick: this.#handleFavoriteClick,
     });
 
-    this.#pointForm = new ListFormView({
+    this.#pointForm = new EventItemFormView({
       point: this.#point,
       onFormSubmit: this.#handleOnFormSubmit,
       onClickButton: this.resetView.bind(this),

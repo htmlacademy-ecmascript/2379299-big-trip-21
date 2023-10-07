@@ -1,4 +1,4 @@
-import {FilterType} from '../const.js';
+import {FilterType, UpdateType} from '../const.js';
 import { filter } from '../utils.js';
 import AbstractView from '../framework/view/abstract-stateful-view.js';
 
@@ -28,14 +28,15 @@ export default class ListFilterView extends AbstractView{
   #handleClickTypeFilter = null;
   #pointModel = null;
 
-  constructor({onClickTypeFilter, pointModel}) {
+  constructor({onClickTypeFilter, pointModel, filterModel}) {
     super();
     this.#handleClickTypeFilter = onClickTypeFilter;
     this.#pointModel = pointModel;
-    this.element.addEventListener('click',this.#ClickTypeFilter);
+    this.element.addEventListener('click',this.#clickTypeFilterHandler);
+    filterModel.addObserver(this.#handleModelEvent);
   }
 
-  #ClickTypeFilter = (evt) => {
+  #clickTypeFilterHandler = (evt) => {
     const filterType = evt.target.getAttribute('data-filter-type');
     const filterInput = this.element.querySelector(`#filter-${filterType?.toLowerCase()}`);
     const isFilterDisabled = filterInput?.hasAttribute('disabled');
@@ -44,6 +45,14 @@ export default class ListFilterView extends AbstractView{
     }
 
     this.#handleClickTypeFilter(evt.target.dataset.filterType);
+  };
+
+  #handleModelEvent = (updateType) => {
+    switch (updateType) {
+      case UpdateType.UI_RESET:
+        document.querySelector('form.trip-filters').reset();
+        break;
+    }
   };
 
   get template() {

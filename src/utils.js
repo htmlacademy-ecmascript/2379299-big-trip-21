@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import {FilterType} from './const';
 
-const DATE_MONTH_FORMAT = 'D MMMM';
 const TIME_FORMAT = 'HH:mm';
 export default class UniqueRandomGenerator {
   constructor(min, max) {
@@ -25,18 +24,22 @@ export default class UniqueRandomGenerator {
   }
 }
 
-function getRandomElement(array) {
-  const shuffled = array.sort(() => 0.5 - Math.random());
+function getRandomElement(elements) {
+  const shuffled = elements.sort(() => 0.5 - Math.random());
   const selected = shuffled.slice(0, Math.random() > 0.5 ? 2 : 3);
   return selected.join(', ');
 }
-function getRandomElementFromArray(array) {
-  const randomIndex = Math.floor(Math.random() * array.length);
-  return array[randomIndex];
+function getRandomElementFromArray(elements) {
+  const randomIndex = Math.floor(Math.random() * elements.length);
+  return elements[randomIndex];
 }
 
 function formatDateMonth(dueDate) {
-  return dueDate ? dayjs(dueDate).format(DATE_MONTH_FORMAT) : '';
+  const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  const day = dueDate.getDate();
+  const month = months[dueDate.getMonth()];
+
+  return `${day} ${month}`;
 }
 
 function formatTime(dueDate) {
@@ -59,6 +62,10 @@ function convertMinutesToHoursFormat(totalMinutes) {
 }
 
 function convertToCustomFormat(isoDate, format = 'DD/MM/YYYY HH:mm') {
+  if (isoDate === ''){
+    return '';
+  }
+
   const date = dayjs(isoDate);
 
   const formattedDate = date.format(format);
