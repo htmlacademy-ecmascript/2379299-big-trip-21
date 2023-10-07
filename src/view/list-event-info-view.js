@@ -3,7 +3,7 @@ import {formatDateMonth} from '../utils.js';
 
 function createEventInfoTemplate({sum, cities, dates}) {
   const citiesString = cities.join(' &mdash; ');
-  const datesString = dates.join('');
+  const datesString = dates.join('&nbsp;&mdash;&nbsp;');
 
   return (
     ` <section class="trip-main__trip-info  trip-info">
@@ -54,15 +54,11 @@ export default class ListEventInfoView extends AbstractView{
 
     return [
       formatDateMonth(points[0]?.dateFrom),
-      '&nbsp;&mdash;&nbsp;',
       formatDateMonth(points[points.length - 1]?.dateFrom)
     ];
   }
 
   #calculateCities(points){
-    // console.log('points.length', points.length);
-    // const counter = points.reduce((sum) => sum + 1, 1);
-
     if (points.length === 0){
       return [];
     }
