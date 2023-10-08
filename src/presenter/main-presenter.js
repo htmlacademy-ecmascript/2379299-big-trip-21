@@ -86,7 +86,6 @@ export default class MainPresenter {
   }
 
   init(){
-
     this.#renderPointsList();
   }
 
@@ -173,10 +172,12 @@ export default class MainPresenter {
   }
 
   #renderNewForm() {
-    this.#newPointForm.init({
-      offers: this.#pointModel.offers,
-      destinations: this.#pointModel.destinations
-    });
+    try {
+      this.#newPointForm.init({
+        offers: this.#pointModel.offers,
+        destinations: this.#pointModel.destinations
+      });
+    } catch (error) { /* empty */ }
   }
 
   #renderPoint(point){
